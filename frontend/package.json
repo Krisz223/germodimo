@@ -1,0 +1,39 @@
+{
+  "name": "geronimo-mod-studio",
+  "version": "1.0.0",
+  "description": "Custom mod SDK for Geronimo",
+  "private": true,
+  "main": "electron-main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on tcp:5173 && cross-env NODE_ENV=development electron .\"",
+    "build": "vite build && electron-builder"
+  },
+  "build": {
+    "appId": "com.geronimo.modstudio",
+    "productName": "GerMODimo",
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "directories": {
+      "output": "release"
+    }
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3",
+    "cross-env": "^10.1.0",
+    "electron": "^43.1.1",
+    "electron-builder": "^26.15.3",
+    "vite": "^8.1.1",
+    "wait-on": "^9.0.10"
+  },
+  "dependencies": {
+    "extract-zip": "^2.0.1"
+  }
+}
