@@ -13,7 +13,10 @@
     "appId": "com.geronimo.modstudio",
     "productName": "GerMODimo",
     "win": {
-      "target": "nsis"
+      "target": [
+        "nsis",
+        "zip"
+      ]
     },
     "nsis": {
       "oneClick": false,
