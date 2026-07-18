@@ -7,6 +7,18 @@ mods from a single window.
 > This is an unofficial, community-made tool. It is **not affiliated with or endorsed by** the
 > developers or publisher of Geronimo. See [DISCLAIMER.md](DISCLAIMER.md).
 
+![GerMODimo walkthrough](assets/germodimo-demo.gif)
+
+---
+
+## Screenshots
+
+| Dashboard | Modulations |
+|-----------|-------------|
+| ![Dashboard](assets/01-dashboard.png) | ![Modulations](assets/03-modulations.png) |
+| **UE4SS System** | **Settings** |
+| ![UE4SS](assets/02-ue4ss.png) | ![Settings](assets/04-settings.png) |
+
 ---
 
 ## Download
