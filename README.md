@@ -9,6 +9,19 @@ tactical-looking window.
 
 ---
 
+## ⬇️ Download & install
+
+**Just grab the installer — no Node.js, no building:**
+
+### → [Download the latest installer](https://github.com/Krisz223/germodimo/releases/latest)
+
+Run `GerMODimo Setup 1.0.0.exe`. Windows SmartScreen may warn (the app is unsigned) — click
+**More info → Run anyway**. Then open GerMODimo, hit the UE4SS **Install** button, and drag in mods.
+
+Get the mods here: **[geronimo-mods](https://github.com/Krisz223/geronimo-mods)**.
+
+---
+
 ## What it does
 
 - **Finds the game** automatically (Steam library scan) or by manual folder pick.
@@ -25,7 +38,9 @@ Companion mods: **[geronimo-mods](https://github.com/Krisz223/geronimo-mods)**.
 
 ---
 
-## Build from source
+## Build from source (developers only)
+
+> Most users don't need this — just use the [installer](https://github.com/Krisz223/germodimo/releases/latest) above.
 
 Requires [Node.js](https://nodejs.org) (18+).
 
