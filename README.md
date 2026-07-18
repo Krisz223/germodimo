@@ -1,70 +1,74 @@
 # GerMODimo
 
-A desktop **mod manager** for **Geronimo** (VR tactical shooter, Unreal Engine 5.7), built with
-Electron. It sets up the UE4SS scripting runtime the game needs and manages your mods from one
-tactical-looking window.
+A desktop mod manager for **Geronimo** (VR tactical shooter, Unreal Engine 5.7). GerMODimo sets up
+the UE4SS scripting runtime the game requires and lets you install, enable, configure, and remove
+mods from a single window.
 
-> ⚠️ Fan-made and **not affiliated with or endorsed by** the developers or publisher of Geronimo.
-> See [DISCLAIMER.md](DISCLAIMER.md).
-
----
-
-## ⬇️ Download & install
-
-**Just grab the installer — no Node.js, no building:**
-
-### → [Download the latest installer](https://github.com/Krisz223/germodimo/releases/latest)
-
-Run `GerMODimo Setup 1.0.0.exe`. Windows SmartScreen may warn (the app is unsigned) — click
-**More info → Run anyway**. Then open GerMODimo, hit the UE4SS **Install** button, and drag in mods.
-
-Get the mods here: **[geronimo-mods](https://github.com/Krisz223/geronimo-mods)**.
+> This is an unofficial, community-made tool. It is **not affiliated with or endorsed by** the
+> developers or publisher of Geronimo. See [DISCLAIMER.md](DISCLAIMER.md).
 
 ---
 
-## What it does
+## Download
 
-- **Finds the game** automatically (Steam library scan) or by manual folder pick.
-- **Installs UE4SS** for you — the *experimental* build plus the UE 5.7 AOB signatures required by
-  this game's 5.7.4 engine (stock UE4SS does not work on it). Downloaded from UE4SS's official
-  GitHub releases; nothing proprietary is bundled.
-- **Manages mods** — drag-and-drop `.zip` install, enable/disable toggles, delete, load-order for
-  `.pak` mods, separates your custom mods from the core UE4SS modules.
-- **Live config editor** — per-mod settings with sliders, a color picker, and a **Reset to Default**
-  button. Writes each mod's `config.json`, which mods re-read live in-game.
-- **Launch / kill game**, **back up save data**, optional launch-on-boot and process monitoring.
+**[Download the latest installer](https://github.com/Krisz223/germodimo/releases/latest)**, then run
+`GerMODimo Setup 1.0.0.exe`.
 
-Companion mods: **[geronimo-mods](https://github.com/Krisz223/geronimo-mods)**.
+Because the installer is not code-signed, Windows SmartScreen may show a warning — select
+**More info → Run anyway** to continue.
+
+Mods are available separately: **[geronimo-mods](https://github.com/Krisz223/geronimo-mods)**.
+
+## Requirements
+
+- A legal copy of **Geronimo** on Steam.
+- Windows 10 or 11.
 
 ---
 
-## Build from source (developers only)
+## Features
 
-> Most users don't need this — just use the [installer](https://github.com/Krisz223/germodimo/releases/latest) above.
+- **Game detection** — locates your Geronimo install automatically, or lets you select it manually.
+- **UE4SS installer** — downloads and installs the scripting runtime the game needs, including the
+  UE 5.7 signatures required by this build. All components are fetched from their official sources.
+- **Mod management** — install by drag-and-drop, enable/disable, remove, and set load order.
+- **Live configuration** — edit each mod's settings with sliders, a colour picker, and a
+  *Reset to Default* button; changes apply in-game within about a second.
+- **Save-data backup** — makes a timestamped copy of your Geronimo save games (gun loadouts, kits,
+  outfits, and patches). Recommended before installing or experimenting with mods.
+- **Launch / stop the game** and optional startup + process monitoring.
 
-Requires [Node.js](https://nodejs.org) (18+).
+---
+
+## Usage
+
+1. Install and open GerMODimo.
+2. On the dashboard, confirm the game path (or browse to it).
+3. Open the **UE4SS** tab and install the runtime.
+4. On the **Modulations** tab, drag in mod `.zip` files and enable them.
+5. Launch the game.
+
+Mods install to `…\GERONIMO\Geronimo\Binaries\Win64\ue4ss\Mods\`; `.pak` mods install to
+`…\Geronimo\Content\Paks\~mods\`.
+
+---
+
+## Building from source
+
+Intended for developers. Most users should use the [installer](https://github.com/Krisz223/germodimo/releases/latest).
+
+Requires Node.js version 18 or newer.
 
 ```bash
-# frontend (the Electron app)
 cd frontend
 npm install
 npm run dev      # run in development
 npm run build    # produce a packaged installer in frontend/release/
 ```
 
-The `backend/` folder is an optional helper service and is not required to run the app.
-
-## How mods are installed by it
-
-- **UE4SS Lua mods** → `...\GERONIMO\Geronimo\Binaries\Win64\ue4ss\Mods\`, toggled via `mods.txt`.
-- **`.pak` mods** → `...\Geronimo\Content\Paks\~mods\`.
-
-## Safety
-
-- No game files or copyrighted assets are included or redistributed.
-- UE4SS is fetched from its official source at install time, not shipped here.
-- Single-player use recommended.
+---
 
 ## License
 
-Original code is [MIT](LICENSE). Geronimo and all related trademarks belong to their respective owners.
+Original code is released under the [MIT License](LICENSE). *Geronimo* and all related trademarks
+are the property of their respective owners.
