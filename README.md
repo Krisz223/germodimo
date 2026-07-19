@@ -2,6 +2,7 @@
 
 <p align="center">
   <a href="https://www.nexusmods.com/geronimo/mods/6"><img src="https://img.shields.io/badge/%F0%9F%91%81%20View%20on-Nexus%20Mods-DA8E35?style=for-the-badge" alt="View on Nexus Mods"></a>
+  <img src="https://img.shields.io/badge/coming%20soon-in%20review-9e9e9e?style=for-the-badge" alt="coming soon">
 </p>
 
 A desktop mod manager for **Geronimo** (VR tactical shooter, Unreal Engine 5.7). GerMODimo sets up
