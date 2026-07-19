@@ -1,5 +1,9 @@
 # GerMODimo
 
+<p align="center">
+  <a href="https://www.nexusmods.com/geronimo/mods/6"><img src="https://img.shields.io/badge/%F0%9F%91%81%20View%20on-Nexus%20Mods-DA8E35?style=for-the-badge" alt="View on Nexus Mods"></a>
+</p>
+
 A desktop mod manager for **Geronimo** (VR tactical shooter, Unreal Engine 5.7). GerMODimo sets up
 the UE4SS scripting runtime the game requires and lets you install, enable, configure, and remove
 mods from a single window.
