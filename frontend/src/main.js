@@ -843,11 +843,11 @@ function renderAppearance() {
     const curT = localStorage.getItem('gm_theme') || 'nightvision';
     const curL = localStorage.getItem('gm_layout') || 'comfortable';
     tg.innerHTML = Object.entries(THEMES).map(([k, t]) =>
-        `<button class="btn-secondary appearance-chip" data-theme="${k}" style="${k === curT ? `border-color:${t.accent}; color:${t.accent};` : ''}">
-            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${t.accent};margin-right:0.5rem;"></span>${t.label}
+        `<button class="appearance-chip${k === curT ? ' active' : ''}" data-theme="${k}">
+            <span class="chip-dot" style="background:${t.accent}; color:${t.accent};"></span>${t.label}
         </button>`).join('');
     lg.innerHTML = Object.entries(LAYOUTS).map(([k, l]) =>
-        `<button class="btn-secondary appearance-chip" data-layout="${k}" style="${k === curL ? 'border-color:var(--accent); color:var(--accent);' : ''}">${l.label}</button>`).join('');
+        `<button class="appearance-chip${k === curL ? ' active' : ''}" data-layout="${k}">${l.label}</button>`).join('');
     tg.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
     lg.querySelectorAll('[data-layout]').forEach(b => b.onclick = () => applyLayout(b.dataset.layout));
 }

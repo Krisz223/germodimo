@@ -18,14 +18,52 @@
   --ui-gap: 1rem;
 }
 
-/* layout density — driven by Settings > Appearance */
-body[data-layout="compact"] .mod-card,
-body[data-layout="dense"] .mod-card { padding: var(--ui-pad); }
-body[data-layout="compact"] .mod-row,
-body[data-layout="dense"] .mod-row { padding: var(--ui-pad); margin-bottom: var(--ui-gap); }
-body[data-layout="dense"] { font-size: calc(1rem * var(--ui-scale)); }
-body[data-layout="compact"] { font-size: calc(1rem * var(--ui-scale)); }
-.appearance-chip { cursor: pointer; transition: border-color .15s, color .15s; }
+/* ---- Appearance chips (Settings) ---- */
+.appearance-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-base);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 0.5rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease, background .15s ease;
+}
+.appearance-chip:hover {
+  border-color: var(--text-muted);
+  color: var(--text-main);
+}
+.appearance-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+.chip-dot {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* ---- Layout density: real spacing/structure changes, not just text size ---- */
+#mod-list-container { gap: var(--ui-gap) !important; }
+.mod-card { padding: var(--ui-pad); }
+
+body[data-layout="compact"] .mod-card h4 { font-size: 0.95rem; }
+body[data-layout="compact"] .btn { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
+
+/* dense: strip the card chrome down to tight list rows */
+body[data-layout="dense"] .mod-card h4 { font-size: 0.9rem; margin-bottom: 0 !important; }
+body[data-layout="dense"] .btn { padding: 0.25rem 0.55rem; font-size: 0.7rem; }
+body[data-layout="dense"] #mod-list-container .mod-card::before,
+body[data-layout="dense"] #mod-list-container .mod-card::after { display: none; }
+body[data-layout="dense"] #mod-list-container .mod-card { border-left-width: 2px; }
+body[data-layout="dense"] .header { margin-bottom: 0.75rem !important; }
 
 * {
   box-sizing: border-box;
@@ -353,3 +391,15 @@ h1, h2, h3, h4 {
 .collapsible-content.open {
   display: flex;
 }
+
+/* ---- layout density overrides (must come last to beat .mod-card base rule) ---- */
+body[data-layout="comfortable"] .mod-card { padding: 1.5rem; }
+body[data-layout="compact"]     .mod-card { padding: 1rem; }
+body[data-layout="dense"]       .mod-card { padding: 0.6rem 0.9rem; }
+
+body[data-layout="comfortable"] #mod-list-container { gap: 1rem !important; }
+body[data-layout="compact"]     #mod-list-container { gap: 0.5rem !important; }
+body[data-layout="dense"]       #mod-list-container { gap: 0.25rem !important; }
+
+body[data-layout="compact"] .main-content { padding: 1.5rem 2rem; }
+body[data-layout="dense"]   .main-content { padding: 1rem 1.5rem; }

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.1
+
+### Fixed
+- **Theme/layout buttons restyled.** They were rendering as plain light-coloured browser buttons
+  that clashed with the interface. They are now dark tactical chips with a glowing colour dot, and
+  the selected one is tinted in the active accent.
+- **Layout density now actually changes the layout.** Previously it only scaled text. It now
+  adjusts card padding, page margins, list spacing, button sizes and heading sizes — Comfortable,
+  Compact and Dense are meaningfully different.
+
+
 ## 1.1.0
 
 ### Added
