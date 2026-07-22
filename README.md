@@ -62,11 +62,16 @@ Mods are available separately: **[geronimo-mods](https://github.com/Krisz223/ger
 1. Install and open GerMODimo.
 2. On the dashboard, confirm the game path (or browse to it).
 3. Open the **UE4SS** tab and install the runtime.
-4. On the **Modulations** tab, drag in mod `.zip` files and enable them.
+4. On the **Modulations** tab, drag in mods and enable them. Both `.zip` archives and raw pak
+   files (`.pak` / `.ucas` / `.utoc`) can be dropped straight in.
 5. Launch the game.
 
-Mods install to `…\GERONIMO\Geronimo\Binaries\Win64\ue4ss\Mods\`; `.pak` mods install to
-`…\Geronimo\Content\Paks\~mods\`.
+Script mods install to `…\GERONIMO\Geronimo\Binaries\Win64\ue4ss\Mods\`; pak mods install to
+`…\Geronimo\Content\Paks\Mods\`. Modern IoStore pak mods come as a `.pak` + `.ucas` + `.utoc`
+set — GerMODimo handles all three as one mod, so enabling, disabling, and removing keeps them
+together.
+
+You can change the colour theme and layout density under **Settings → Appearance**.
 
 ---
 

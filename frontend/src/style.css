@@ -13,7 +13,19 @@
   --border-color: #222222;
   --font-mono: 'Share Tech Mono', monospace;
   --font-sans: 'Inter', sans-serif;
+  --ui-scale: 1;
+  --ui-pad: 1.5rem;
+  --ui-gap: 1rem;
 }
+
+/* layout density — driven by Settings > Appearance */
+body[data-layout="compact"] .mod-card,
+body[data-layout="dense"] .mod-card { padding: var(--ui-pad); }
+body[data-layout="compact"] .mod-row,
+body[data-layout="dense"] .mod-row { padding: var(--ui-pad); margin-bottom: var(--ui-gap); }
+body[data-layout="dense"] { font-size: calc(1rem * var(--ui-scale)); }
+body[data-layout="compact"] { font-size: calc(1rem * var(--ui-scale)); }
+.appearance-chip { cursor: pointer; transition: border-color .15s, color .15s; }
 
 * {
   box-sizing: border-box;

@@ -135,7 +135,12 @@ app.on('window-all-closed', () => {
 });
 
 // Helper functions for paths
-const getPaksPath = (gamePath) => path.join(gamePath, 'Geronimo', 'Content', 'Paks', '~mods');
+// Geronimo mounts pak mods from Content\Paks\Mods (this is where community/Nexus pak mods install).
+// IoStore mods ship as a triplet: .pak + .ucas + .utoc (all three must move together).
+const getPaksPath = (gamePath) => path.join(gamePath, 'Geronimo', 'Content', 'Paks', 'Mods');
+const PAK_EXTS = ['.pak', '.ucas', '.utoc'];
+const isPakFile = (n) => PAK_EXTS.some(e => n.toLowerCase().endsWith(e));
+const pakBaseName = (n) => n.replace(/\.(pak|ucas|utoc)(\.disabled)?$/i, '').replace(/\.disabled$/i, '');
 const getUE4SSModsPath = (gamePath) => path.join(gamePath, 'Geronimo', 'Binaries', 'Win64', 'ue4ss', 'Mods');
 
 // IPC Handlers
@@ -150,7 +155,7 @@ ipcMain.handle('dialog:openDirectory', async () => {
 ipcMain.handle('dialog:openFileSelect', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
       properties: ['openFile'],
-      filters: [{ name: 'Mod Archives', extensions: ['zip'] }]
+      filters: [{ name: 'Mods', extensions: ['zip','pak','ucas','utoc'] }]
     });
     if (canceled) return null;
     return filePaths[0];
@@ -331,19 +336,26 @@ ipcMain.handle('mod:listMods', async (event, gamePath) => {
         const paksDir = getPaksPath(gamePath);
         if (fs.existsSync(paksDir)) {
             const files = fs.readdirSync(paksDir);
+            // group the IoStore triplet (.pak/.ucas/.utoc) into ONE mod entry
+            const seen = new Set();
             for (const file of files) {
-                if (file.endsWith('.pak') || file.endsWith('.disabled')) {
-                    const filePath = path.join(paksDir, file);
-                    const stats = fs.statSync(filePath);
-                    mods.push({
-                        name: file.replace('.pak', '').replace('.disabled', ''),
-                        type: 'pak',
-                        enabled: file.endsWith('.pak'),
-                        hasConfig: false,
-                        size: stats.size,
-                        installTime: stats.mtimeMs
-                    });
-                }
+                if (!(isPakFile(file) || file.endsWith('.disabled'))) continue;
+                const base = pakBaseName(file);
+                if (seen.has(base)) continue;
+                seen.add(base);
+                const group = files.filter(f => pakBaseName(f) === base);
+                const size = group.reduce((s, f) => {
+                    try { return s + fs.statSync(path.join(paksDir, f)).size; } catch { return s; }
+                }, 0);
+                const stats = fs.statSync(path.join(paksDir, file));
+                mods.push({
+                    name: base,
+                    type: 'pak',
+                    enabled: !group.some(f => f.endsWith('.disabled')),
+                    hasConfig: false,
+                    size,
+                    installTime: stats.mtimeMs
+                });
             }
         }
 
@@ -406,7 +418,8 @@ ipcMain.handle('mod:installMod', async (event, { gamePath, modPath }) => {
                         } else {
                             processDirectory(itemPath); // recurse
                         }
-                    } else if (item.name.endsWith('.pak')) {
+                    } else if (isPakFile(item.name)) {
+                        // copies .pak/.ucas/.utoc — IoStore mods need all three
                         const target = getPaksPath(gamePath);
                         if(!fs.existsSync(target)) fs.mkdirSync(target, {recursive: true});
                         fs.copyFileSync(itemPath, path.join(target, item.name));
@@ -417,7 +430,23 @@ ipcMain.handle('mod:installMod', async (event, { gamePath, modPath }) => {
             fs.rmSync(tempExtractedPath, { recursive: true, force: true });
             return { success: true };
         }
-        return { success: false, error: "Only .zip files are supported currently." };
+        // bare pak files can be dropped directly (.pak / .ucas / .utoc)
+        if (isPakFile(modPath)) {
+            const target = getPaksPath(gamePath);
+            if (!fs.existsSync(target)) fs.mkdirSync(target, { recursive: true });
+            const base = pakBaseName(path.basename(modPath));
+            const srcDir = path.dirname(modPath);
+            // grab any sibling members of the same triplet so the mod isn't installed half-broken
+            let copied = 0;
+            for (const f of fs.readdirSync(srcDir)) {
+                if (isPakFile(f) && pakBaseName(f) === base) {
+                    fs.copyFileSync(path.join(srcDir, f), path.join(target, f));
+                    copied++;
+                }
+            }
+            return { success: true, note: `${copied} pak file(s) installed` };
+        }
+        return { success: false, error: "Unsupported file. Drop a .zip, or a .pak/.ucas/.utoc." };
     } catch(e) {
         return { success: false, error: e.message };
     }
@@ -427,11 +456,14 @@ ipcMain.handle('mod:toggleMod', async (event, { gamePath, modName, modType, enab
     try {
         if (modType === 'pak') {
             const paksDir = getPaksPath(gamePath);
-            const currentName = enable ? `${modName}.disabled` : `${modName}.pak`;
-            const newName = enable ? `${modName}.pak` : `${modName}.disabled`;
-            
-            if (fs.existsSync(path.join(paksDir, currentName))) {
-                fs.renameSync(path.join(paksDir, currentName), path.join(paksDir, newName));
+            // toggle EVERY file of the triplet (.pak/.ucas/.utoc)
+            const group = fs.readdirSync(paksDir).filter(f => pakBaseName(f) === modName);
+            for (const f of group) {
+                const from = path.join(paksDir, f);
+                const to = enable
+                    ? path.join(paksDir, f.replace(/\.disabled$/i, ''))
+                    : (f.endsWith('.disabled') ? from : path.join(paksDir, f + '.disabled'));
+                if (from !== to && fs.existsSync(from)) fs.renameSync(from, to);
             }
         } else if (modType === 'script') {
             const modsTxtPath = path.join(getUE4SSModsPath(gamePath), 'mods.txt');
@@ -562,10 +594,12 @@ ipcMain.handle('mod:deleteMod', async (event, { gamePath, modName, modType }) =>
     try {
         if (modType === 'pak') {
             const paksDir = getPaksPath(gamePath);
-            const pakPath = path.join(paksDir, `${modName}.pak`);
-            const disPath = path.join(paksDir, `${modName}.disabled`);
-            if (fs.existsSync(pakPath)) fs.unlinkSync(pakPath);
-            if (fs.existsSync(disPath)) fs.unlinkSync(disPath);
+            // remove every file of the triplet (.pak/.ucas/.utoc, enabled or .disabled)
+            for (const f of fs.readdirSync(paksDir)) {
+                if (pakBaseName(f) === modName) {
+                    try { fs.unlinkSync(path.join(paksDir, f)); } catch {}
+                }
+            }
         } else if (modType === 'script') {
             const scriptsDir = getUE4SSModsPath(gamePath);
             const modDir = path.join(scriptsDir, modName);

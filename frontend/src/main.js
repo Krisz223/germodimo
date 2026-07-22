@@ -59,7 +59,7 @@ document.querySelector('#app').innerHTML = `
             <div class="mod-card" style="margin-bottom: 1.5rem;">
                 <h3>DEPLOY NEW MODULE</h3>
                 <div id="dropzone" style="border: 1px dashed var(--border-color); padding: 2.5rem; text-align: center; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease; margin-top: 1rem;">
-                    DRAG & DROP ARCHIVE (.ZIP)<br>
+                    DRAG &amp; DROP MOD (.ZIP or .PAK)<br>
                     <span style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">OR CLICK TO BROWSE LOCAL FILES</span>
                 </div>
             </div>
@@ -117,6 +117,18 @@ document.querySelector('#app').innerHTML = `
                             <div style="font-size: 0.85rem; color: var(--text-muted);">Deploy interface automatically when Geronimo.exe is detected.</div>
                         </div>
                     </label>
+                </div>
+            </div>
+
+            <div class="mod-card" style="margin-bottom: 2rem;">
+                <h3>APPEARANCE</h3>
+                <div style="margin-top: 1rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">COLOUR SCHEME</div>
+                    <div id="theme-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">LAYOUT DENSITY</div>
+                    <div id="layout-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
                 </div>
             </div>
 
@@ -578,7 +590,7 @@ dropzone.addEventListener('drop', async (e) => {
         } else {
             alert("EXTRACTION FAILED: " + result.error);
         }
-        dropzone.innerHTML = 'DRAG & DROP ARCHIVE (.ZIP)<br><span style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">OR CLICK TO BROWSE LOCAL FILES</span>';
+        dropzone.innerHTML = 'DRAG &amp; DROP MOD (.ZIP or .PAK)<br><span style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">OR CLICK TO BROWSE LOCAL FILES</span>';
     }
 });
 
@@ -593,7 +605,7 @@ dropzone.addEventListener('click', async () => {
         } else {
             alert("EXTRACTION FAILED: " + result.error);
         }
-        dropzone.innerHTML = 'DRAG & DROP ARCHIVE (.ZIP)<br><span style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">OR CLICK TO BROWSE LOCAL FILES</span>';
+        dropzone.innerHTML = 'DRAG &amp; DROP MOD (.ZIP or .PAK)<br><span style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">OR CLICK TO BROWSE LOCAL FILES</span>';
     }
 });
 
@@ -776,7 +788,76 @@ const chkGameMonitor = document.getElementById('chk-game-monitor');
 const btnUninstallMods = document.getElementById('btn-uninstall-mods');
 const btnUninstallApp = document.getElementById('btn-uninstall-app');
 
+const THEMES = {
+    'nightvision': { label: 'NIGHT VISION', accent: '#50C878', bgBase: '#050505', bgPanel: '#0d0d0d', bgCard: '#141414', border: '#222222', text: '#e0e0e0', muted: '#888888' },
+    'amber':       { label: 'AMBER CRT',    accent: '#f0a83c', bgBase: '#0a0803', bgPanel: '#12100a', bgCard: '#1a1610', border: '#2a2416', text: '#ece4d4', muted: '#8a8070' },
+    'ice':         { label: 'ICE BLUE',     accent: '#5fb4e6', bgBase: '#04070a', bgPanel: '#0b1016', bgCard: '#111820', border: '#1d2833', text: '#dce8f2', muted: '#7d8f9e' },
+    'crimson':     { label: 'CRIMSON',      accent: '#e05a5a', bgBase: '#080404', bgPanel: '#110b0b', bgCard: '#1a1111', border: '#2b1c1c', text: '#f0dede', muted: '#94807f' },
+};
+
+const LAYOUTS = {
+    'comfortable': { label: 'COMFORTABLE', scale: '1',    pad: '1.5rem', gap: '1rem'   },
+    'compact':     { label: 'COMPACT',     scale: '0.92', pad: '1rem',   gap: '0.6rem' },
+    'dense':       { label: 'DENSE',       scale: '0.85', pad: '0.7rem', gap: '0.4rem' },
+};
+
+function applyTheme(key) {
+    const t = THEMES[key] || THEMES.nightvision;
+    const r = document.documentElement.style;
+    r.setProperty('--accent', t.accent);
+    r.setProperty('--accent-dim', hexToRgba(t.accent, 0.2));
+    r.setProperty('--bg-base', t.bgBase);
+    r.setProperty('--bg-panel', t.bgPanel);
+    r.setProperty('--bg-card', t.bgCard);
+    r.setProperty('--border-color', t.border);
+    r.setProperty('--text-main', t.text);
+    r.setProperty('--text-muted', t.muted);
+    localStorage.setItem('gm_theme', key);
+    renderAppearance();
+}
+
+function applyLayout(key) {
+    const l = LAYOUTS[key] || LAYOUTS.comfortable;
+    const r = document.documentElement.style;
+    r.setProperty('--ui-scale', l.scale);
+    r.setProperty('--ui-pad', l.pad);
+    r.setProperty('--ui-gap', l.gap);
+    document.body.dataset.layout = key;
+    localStorage.setItem('gm_layout', key);
+    renderAppearance();
+}
+
+function hexToRgba(hex, a) {
+    const n = parseInt(hex.replace('#',''), 16);
+    return `rgba(${(n>>16)&255}, ${(n>>8)&255}, ${n&255}, ${a})`;
+}
+
+function chipHtml(active, label, accent) {
+    return `<button class="btn-secondary appearance-chip" style="${active ? `border-color:${accent}; color:${accent};` : ''}">${label}</button>`;
+}
+
+function renderAppearance() {
+    const tg = document.getElementById('theme-grid');
+    const lg = document.getElementById('layout-grid');
+    if (!tg || !lg) return;
+    const curT = localStorage.getItem('gm_theme') || 'nightvision';
+    const curL = localStorage.getItem('gm_layout') || 'comfortable';
+    tg.innerHTML = Object.entries(THEMES).map(([k, t]) =>
+        `<button class="btn-secondary appearance-chip" data-theme="${k}" style="${k === curT ? `border-color:${t.accent}; color:${t.accent};` : ''}">
+            <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${t.accent};margin-right:0.5rem;"></span>${t.label}
+        </button>`).join('');
+    lg.innerHTML = Object.entries(LAYOUTS).map(([k, l]) =>
+        `<button class="btn-secondary appearance-chip" data-layout="${k}" style="${k === curL ? 'border-color:var(--accent); color:var(--accent);' : ''}">${l.label}</button>`).join('');
+    tg.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
+    lg.querySelectorAll('[data-layout]').forEach(b => b.onclick = () => applyLayout(b.dataset.layout));
+}
+
+// restore saved appearance on boot
+applyTheme(localStorage.getItem('gm_theme') || 'nightvision');
+applyLayout(localStorage.getItem('gm_layout') || 'comfortable');
+
 async function loadSettings() {
+    renderAppearance();
     if(!window.electronAPI) return;
     const settings = await window.electronAPI.getSettings();
     chkStartup.checked = settings.openAtLogin;
