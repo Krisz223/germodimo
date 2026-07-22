@@ -403,3 +403,75 @@ body[data-layout="dense"]       #mod-list-container { gap: 0.25rem !important; }
 
 body[data-layout="compact"] .main-content { padding: 1.5rem 2rem; }
 body[data-layout="dense"]   .main-content { padding: 1rem 1.5rem; }
+
+/* ================= INTERFACE LAYOUT (structural) ================= */
+
+/* --- SIDEBAR RIGHT: nav physically moves to the other side --- */
+body[data-ui="mirror"] #app { flex-direction: row-reverse; }
+body[data-ui="mirror"] .sidebar {
+  border-right: none;
+  border-left: 1px solid var(--border-color);
+}
+body[data-ui="mirror"] .nav-item {
+  border-left: none;
+  border-right: 3px solid transparent;
+  text-align: right;
+}
+body[data-ui="mirror"] .nav-item.active {
+  border-left: none;
+  border-right: 3px solid var(--accent);
+}
+body[data-ui="mirror"] .brand { flex-direction: row-reverse; }
+
+/* --- TOP BAR: nav becomes a horizontal strip, content full width --- */
+body[data-ui="topbar"] #app { flex-direction: column; }
+body[data-ui="topbar"] .sidebar {
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  padding: 0;
+  border-right: none;
+  border-bottom: 1px solid var(--border-color);
+}
+body[data-ui="topbar"] .brand {
+  padding: 0.6rem 1.25rem;
+  margin-bottom: 0;
+  border-bottom: none;
+  border-right: 1px solid var(--border-color);
+}
+body[data-ui="topbar"] .brand h1 { font-size: 1.1rem; }
+body[data-ui="topbar"] .nav-item {
+  padding: 1.1rem 1.25rem;
+  border-left: none;
+  border-bottom: 3px solid transparent;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+body[data-ui="topbar"] .nav-item.active {
+  border-left: none;
+  border-bottom: 3px solid var(--accent);
+}
+
+/* --- ICON RAIL: collapsed sidebar, labels hidden until hover --- */
+body[data-ui="rail"] .sidebar {
+  width: 68px;
+  overflow: hidden;
+  transition: width .18s ease;
+}
+body[data-ui="rail"] .sidebar:hover { width: 250px; }
+body[data-ui="rail"] .brand { padding: 1rem; justify-content: center; }
+body[data-ui="rail"] .brand h1 { display: none; }
+body[data-ui="rail"] .sidebar:hover .brand { justify-content: flex-start; padding-left: 1.5rem; }
+body[data-ui="rail"] .sidebar:hover .brand h1 { display: block; }
+body[data-ui="rail"] .nav-item {
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body[data-ui="rail"] .sidebar:hover .nav-item {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 1.1rem;
+}

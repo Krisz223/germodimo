@@ -127,7 +127,11 @@ document.querySelector('#app').innerHTML = `
                     <div id="theme-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
                 </div>
                 <div style="margin-top: 1.5rem;">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">LAYOUT DENSITY</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">INTERFACE LAYOUT</div>
+                    <div id="structure-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">SPACING DENSITY</div>
                     <div id="layout-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
                 </div>
             </div>
@@ -801,6 +805,21 @@ const LAYOUTS = {
     'dense':       { label: 'DENSE',       scale: '0.85', pad: '0.7rem', gap: '0.4rem' },
 };
 
+// actual structural layouts — where the nav/panels physically sit
+const STRUCTURES = {
+    'classic':  { label: 'SIDEBAR LEFT'  },
+    'mirror':   { label: 'SIDEBAR RIGHT' },
+    'topbar':   { label: 'TOP BAR'       },
+    'rail':     { label: 'ICON RAIL'     },
+};
+
+function applyStructure(key) {
+    if (!STRUCTURES[key]) key = 'classic';
+    document.body.dataset.ui = key;
+    localStorage.setItem('gm_structure', key);
+    renderAppearance();
+}
+
 function applyTheme(key) {
     const t = THEMES[key] || THEMES.nightvision;
     const r = document.documentElement.style;
@@ -839,9 +858,16 @@ function chipHtml(active, label, accent) {
 function renderAppearance() {
     const tg = document.getElementById('theme-grid');
     const lg = document.getElementById('layout-grid');
+    const sg = document.getElementById('structure-grid');
     if (!tg || !lg) return;
     const curT = localStorage.getItem('gm_theme') || 'nightvision';
     const curL = localStorage.getItem('gm_layout') || 'comfortable';
+    const curS = localStorage.getItem('gm_structure') || 'classic';
+    if (sg) {
+        sg.innerHTML = Object.entries(STRUCTURES).map(([k, s]) =>
+            `<button class="appearance-chip${k === curS ? ' active' : ''}" data-structure="${k}">${s.label}</button>`).join('');
+        sg.querySelectorAll('[data-structure]').forEach(b => b.onclick = () => applyStructure(b.dataset.structure));
+    }
     tg.innerHTML = Object.entries(THEMES).map(([k, t]) =>
         `<button class="appearance-chip${k === curT ? ' active' : ''}" data-theme="${k}">
             <span class="chip-dot" style="background:${t.accent}; color:${t.accent};"></span>${t.label}
@@ -855,6 +881,7 @@ function renderAppearance() {
 // restore saved appearance on boot
 applyTheme(localStorage.getItem('gm_theme') || 'nightvision');
 applyLayout(localStorage.getItem('gm_layout') || 'comfortable');
+applyStructure(localStorage.getItem('gm_structure') || 'classic');
 
 async function loadSettings() {
     renderAppearance();

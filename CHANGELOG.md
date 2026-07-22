@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0
+
+### Added
+- **Interface layouts** — the navigation and panels physically rearrange, under
+  **Settings → Appearance → Interface Layout**:
+  - **Sidebar Left** — the original layout.
+  - **Sidebar Right** — navigation moves to the right edge, nav items and the active indicator
+    mirror with it.
+  - **Top Bar** — navigation becomes a horizontal bar across the top with underline indicators,
+    and content uses the full window width.
+  - **Icon Rail** — the sidebar collapses to a narrow rail and expands on hover, for maximum
+    content space.
+- Spacing density is now a separate control from layout, so the two can be combined freely.
+
+
 ## 1.1.1
 
 ### Fixed
