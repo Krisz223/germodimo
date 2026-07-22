@@ -1,224 +1,201 @@
 import './style.css'
 
 document.querySelector('#app').innerHTML = `
-  <div class="titlebar-drag-region">GERMODIMO SUBSYSTEM [ACTIVE]</div>
+  <div class="titlebar-drag-region">GERMODIMO — OPERATIONS FILE // 2019620</div>
+
   <nav class="sidebar">
-    <div class="brand">
-      <div class="brand-icon"></div>
-      <h1>GERMODIMO</h1>
-    </div>
-    
-    <div class="nav-item active" data-target="dashboard">[01] DASHBOARD</div>
-    <div class="nav-item" data-target="ue4ss">[02] UE4SS SYSTEM</div>
-    <div class="nav-item" data-target="mods">[03] MODULATIONS</div>
-    <div class="nav-item" data-target="settings">[04] SETTINGS</div>
+    <div class="brand"><div class="brand-icon"></div><h1>GERMODIMO</h1></div>
+    <div class="nav-item active" data-target="dashboard"><span class="n">01</span>Dashboard</div>
+    <div class="nav-item" data-target="ue4ss"><span class="n">02</span>UE4SS</div>
+    <div class="nav-item" data-target="mods"><span class="n">03</span>Modules</div>
+    <div class="nav-item" data-target="settings"><span class="n">04</span>Settings</div>
+    <div class="rail-foot">Property of<br>the Operator<br>— do not copy —</div>
   </nav>
 
   <main class="main-content">
-    <div class="header" style="margin-bottom: 2rem;">
-      <h2 id="page-title">SYSTEM DASHBOARD</h2>
+    <div class="header">
+      <h2 id="page-title">Dashboard</h2>
       <div class="status-badge" id="game-status">
-        <div class="status-indicator" style="background: var(--danger); box-shadow: 0 0 8px var(--danger);"></div>
-        INITIATING SCAN...
+        <div class="status-indicator" style="background: var(--stamp)"></div> Initiating scan…
       </div>
     </div>
-    
+
     <div id="tab-content">
-        <!-- Dashboard Tab -->
-        <div class="tab-pane active" id="pane-dashboard">
-            <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-                <button class="btn" id="btn-play-game">EXECUTE GERONIMO</button>
-                <button class="btn" id="btn-backup-saves" style="flex: 1;">BACKUP SAVEDATA</button>
-            </div>
 
-            <div id="path-config" class="mod-card" style="margin-bottom: 2rem;">
-                <h3>INSTALLATION PATH</h3>
-                <p id="game-path-text" style="font-family: monospace; color: var(--accent); margin-bottom: 1rem; margin-top: 0.5rem;">C:\UNKNOWN_PATH</p>
-                <div id="piracy-warning" style="display: none; background: rgba(255,68,68,0.1); border-left: 2px solid var(--danger); padding: 1rem; margin-bottom: 1rem; color: var(--danger);">
-                    <strong>[ WARNING ]</strong> Unofficial/modified game executable detected. Subsystem instability expected.
-                </div>
-                <div style="display: flex; gap: 1rem;">
-                    <button class="btn" id="btn-browse">BROWSE DIRECTORY</button>
-                    <button class="btn" id="btn-open-folder" style="display: none;">OPEN EXPLORER</button>
-                </div>
-            </div>
+      <!-- Dashboard -->
+      <div class="tab-pane active" id="pane-dashboard">
+        <div id="update-banner">
+          <div class="ub-txt"><b>Update available.</b> <span id="ub-version"></span></div>
+          <button class="btn primary" id="btn-update-now" style="padding:.45rem .9rem">Update now</button>
+          <button class="btn" id="btn-update-dismiss" style="padding:.45rem .8rem">Later</button>
         </div>
 
-        <!-- UE4SS Tab -->
-        <div class="tab-pane" id="pane-ue4ss" style="display: none;">
-            <div class="mod-card">
-                <h3>UE4SS INJECTION ENGINE</h3>
-                <p style="margin-top: 0.5rem; color: var(--text-muted);">Required subsystem for code modulations and developer console access.</p>
-                <p id="ue4ss-status-text" style="font-family: monospace; margin-top: 1rem; margin-bottom: 1rem;">STATUS: <span style="color: var(--text-muted);">UNKNOWN</span></p>
-                <button class="btn primary" id="btn-install-ue4ss">INSTALL UE4SS ENGINE</button>
-            </div>
+        <div style="display:flex; gap:1rem; margin-bottom:1.4rem; flex-wrap:wrap;">
+          <button class="btn primary" id="btn-play-game">▸ Execute Geronimo</button>
+          <button class="btn" id="btn-backup-saves" style="flex:1;">Backup Savedata</button>
         </div>
 
-        <!-- Mod Manager Tab -->
-        <div class="tab-pane" id="pane-mods" style="display: none;">
-            <div class="mod-card" style="margin-bottom: 1.5rem;">
-                <h3>DEPLOY NEW MODULE</h3>
-                <div id="dropzone" style="border: 1px dashed var(--border-color); padding: 2.5rem; text-align: center; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease; margin-top: 1rem;">
-                    DRAG &amp; DROP MOD (.ZIP or .PAK)<br>
-                    <span style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">OR CLICK TO BROWSE LOCAL FILES</span>
-                </div>
-            </div>
+        <div id="path-config" class="mod-card">
+          <h3>Installation Path</h3>
+          <p id="game-path-text">C:\\UNKNOWN_PATH</p>
+          <div id="piracy-warning" style="display:none; border-left:3px solid var(--stamp); background:var(--danger-dim); padding:.7rem .9rem; margin:.8rem 0; color:var(--stamp); font-family:var(--type); font-size:.8rem;">
+            <strong>[ WARNING ]</strong> Unofficial/modified executable detected. Instability expected.
+          </div>
+          <div style="display:flex; gap:.8rem; margin-top:.9rem;">
+            <button class="btn" id="btn-browse">Browse Directory</button>
+            <button class="btn" id="btn-open-folder" style="display:none;">Open Explorer</button>
+          </div>
+        </div>
+      </div>
 
-            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                <input type="text" id="mod-search" placeholder="QUERY MODULE..." style="flex: 1; background: var(--bg-base); border: 1px solid var(--border-color); color: #fff; padding: 0.5rem; font-family: var(--font-mono); outline: none;">
-                <select id="mod-sort" style="background: var(--bg-base); border: 1px solid var(--border-color); color: #fff; padding: 0.5rem; font-family: var(--font-mono); outline: none; cursor: pointer;">
-                    <option value="name_asc">SORT: NAME (A-Z)</option>
-                    <option value="enabled_first">SORT: ENABLED</option>
-                    <option value="disabled_first">SORT: DISABLED</option>
-                    <option value="time_desc">SORT: NEWEST</option>
-                    <option value="size_desc">SORT: SIZE (MAX)</option>
-                </select>
-            </div>
+      <!-- UE4SS -->
+      <div class="tab-pane" id="pane-ue4ss" style="display:none;">
+        <div class="mod-card">
+          <h3>UE4SS Injection Engine</h3>
+          <p style="color:var(--ink2); margin:.6rem 0; font-size:.9rem;">Required runtime for script modules and the developer console.</p>
+          <p id="ue4ss-status-text" style="margin:.8rem 0;">Status: <span style="color:var(--olive)">Unknown</span></p>
+          <button class="btn primary" id="btn-install-ue4ss">Install UE4SS Engine</button>
+        </div>
+      </div>
 
-            <div class="header" style="margin-bottom: 1rem; justify-content: space-between; border-bottom: none; padding-bottom: 0;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <input type="checkbox" id="chk-select-all" class="tactical-checkbox">
-                    <h3 id="custom-mods-title" style="font-size: 1.2rem;">CUSTOM MODULES</h3>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="btn danger" id="btn-delete-selected" style="display: none;">PURGE SELECTED</button>
-                    <button class="btn" id="btn-refresh-mods">RESCAN</button>
-                </div>
-            </div>
-            
-            <div id="mod-list-container" style="display: flex; flex-direction: column; gap: 1rem;">
-                <p style="color: var(--text-muted); font-family: var(--font-mono);">[NO MODULES DETECTED]</p>
-            </div>
-
-            <div class="collapsible-header" id="core-modules-header">
-                <span>[+] CORE UE4SS MODULES</span>
-            </div>
-            <div class="collapsible-content" id="core-modules-container">
-                <!-- Core mods go here -->
-            </div>
+      <!-- Mods -->
+      <div class="tab-pane" id="pane-mods" style="display:none;">
+        <div class="mod-card" style="margin-bottom:1.3rem;">
+          <h3>Deploy New Module</h3>
+          <div id="dropzone" style="padding:2.2rem 1rem; text-align:center; cursor:pointer; margin-top:.9rem;">
+            Drag &amp; drop a mod (.zip or .pak)<br>
+            <span style="font-size:.7rem; display:block; margin-top:.4rem;">or click to browse files</span>
+          </div>
         </div>
 
-        <!-- Settings Tab -->
-        <div class="tab-pane" id="pane-settings" style="display: none;">
-            <div class="mod-card" style="margin-bottom: 2rem;">
-                <h3>SYSTEM INTEGRATION</h3>
-                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
-                    <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
-                        <input type="checkbox" id="chk-startup" class="tactical-checkbox">
-                        <div>
-                            <strong>LAUNCH ON OS BOOT</strong>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">Initialize subsystem silently in System Tray.</div>
-                        </div>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
-                        <input type="checkbox" id="chk-game-monitor" class="tactical-checkbox">
-                        <div>
-                            <strong>PROCESS MONITORING</strong>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">Deploy interface automatically when Geronimo.exe is detected.</div>
-                        </div>
-                    </label>
-                </div>
-            </div>
-
-            <div class="mod-card" style="margin-bottom: 2rem;">
-                <h3>APPEARANCE</h3>
-                <div style="margin-top: 1rem;">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">COLOUR SCHEME</div>
-                    <div id="theme-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
-                </div>
-                <div style="margin-top: 1.5rem;">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">INTERFACE LAYOUT</div>
-                    <div id="structure-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
-                </div>
-            </div>
-
-            <div class="mod-card" style="border-color: var(--danger-dim);">
-                <h3 style="color: var(--danger);">CRITICAL OPERATIONS</h3>
-                <p style="color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 1.5rem;">WARNING: ACTIONS ARE IRREVERSIBLE.</p>
-                <div style="display: flex; gap: 1rem;">
-                    <button class="btn danger" id="btn-uninstall-mods">PURGE ALL MODULES</button>
-                    <button class="btn danger" id="btn-uninstall-app">UNINSTALL GERMODIMO</button>
-                </div>
-            </div>
+        <div style="display:flex; gap:.8rem; margin-bottom:1rem;">
+          <input type="text" id="mod-search" placeholder="Search modules…" style="flex:1; padding:.5rem .7rem; outline:none;">
+          <select id="mod-sort" style="padding:.5rem; outline:none; cursor:pointer;">
+            <option value="name_asc">Sort: Name A–Z</option>
+            <option value="enabled_first">Sort: Enabled</option>
+            <option value="disabled_first">Sort: Disabled</option>
+            <option value="time_desc">Sort: Newest</option>
+            <option value="size_desc">Sort: Size</option>
+          </select>
         </div>
+
+        <div class="header" style="border-bottom:1px solid var(--line); padding-bottom:.5rem; margin-bottom:1rem; align-items:center;">
+          <div style="display:flex; gap:.8rem; align-items:center;">
+            <input type="checkbox" id="chk-select-all" class="tactical-checkbox">
+            <h3 id="custom-mods-title" style="font-size:.82rem; letter-spacing:.14em; text-transform:uppercase; color:var(--olive); font-family:var(--type); border:none; padding:0;">Installed Modules</h3>
+          </div>
+          <div style="display:flex; gap:.6rem;">
+            <button class="btn danger" id="btn-delete-selected" style="display:none; padding:.35rem .8rem; font-size:.72rem;">Purge Selected</button>
+            <button class="btn" id="btn-refresh-mods" style="padding:.35rem .8rem; font-size:.72rem;">Rescan</button>
+          </div>
+        </div>
+
+        <div id="mod-list-container"><p style="font-family:var(--type); color:var(--olive);">[ no modules detected ]</p></div>
+
+        <div class="collapsible-header" id="core-modules-header"><span>[+] Core UE4SS Modules</span></div>
+        <div class="collapsible-content" id="core-modules-container"></div>
+      </div>
+
+      <!-- Settings -->
+      <div class="tab-pane" id="pane-settings" style="display:none;">
+        <div class="mod-card" style="margin-bottom:1.4rem;">
+          <h3>System Integration</h3>
+          <div style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+            <label style="display:flex; align-items:center; gap:1rem; cursor:pointer;">
+              <input type="checkbox" id="chk-startup" class="tactical-checkbox">
+              <div><strong>Launch on OS boot</strong><div style="font-size:.82rem; color:var(--ink2);">Start silently in the system tray.</div></div>
+            </label>
+            <label style="display:flex; align-items:center; gap:1rem; cursor:pointer;">
+              <input type="checkbox" id="chk-game-monitor" class="tactical-checkbox">
+              <div><strong>Process monitoring</strong><div style="font-size:.82rem; color:var(--ink2);">Show the window automatically when Geronimo launches.</div></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="mod-card" style="margin-bottom:1.4rem;">
+          <h3>Updates</h3>
+          <div style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+            <label style="display:flex; align-items:center; gap:1rem; cursor:pointer;">
+              <input type="checkbox" id="chk-auto-update" class="tactical-checkbox">
+              <div><strong>Check for updates automatically</strong><div style="font-size:.82rem; color:var(--ink2);">Checks GitHub on launch and notifies you when a new version ships.</div></div>
+            </label>
+            <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+              <button class="btn" id="btn-check-update" style="padding:.45rem .9rem;">Check for updates</button>
+              <span id="update-status" style="font-family:var(--type); font-size:.78rem; color:var(--ink2);">Current version: <b id="cur-version">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mod-card" style="margin-bottom:1.4rem;">
+          <h3>Appearance</h3>
+          <div style="margin-top:1rem;">
+            <div style="font-family:var(--type); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--olive); margin-bottom:.6rem;">Paper Stock</div>
+            <div id="theme-grid" style="display:flex; flex-wrap:wrap; gap:.6rem;"></div>
+          </div>
+        </div>
+
+        <div class="mod-card" style="border-color:var(--stamp);">
+          <h3 style="color:var(--stamp); border-color:var(--danger-dim);">Critical Operations</h3>
+          <p style="color:var(--ink2); font-family:var(--type); font-size:.78rem; margin:.5rem 0 1.1rem;">Warning: these actions cannot be undone.</p>
+          <div style="display:flex; gap:.8rem; flex-wrap:wrap;">
+            <button class="btn danger" id="btn-uninstall-mods">Purge All Modules</button>
+            <button class="btn danger" id="btn-uninstall-app">Uninstall GerMODimo</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 
-  <!-- Config Modal Overlay -->
-  <div id="config-modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(5,5,5,0.9); z-index: 1000; justify-content: center; align-items: center;">
-      <div class="mod-card" style="width: 500px; max-height: 80vh; display: flex; flex-direction: column; border: 1px solid var(--accent);">
-          <h3 id="config-modal-title" style="margin-bottom: 1rem; color: var(--accent);">MODULE CONFIGURATION</h3>
-          <div id="config-modal-content" style="overflow-y: auto; flex-grow: 1; padding-right: 1rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 1rem; font-family: var(--font-mono);"></div>
-          <div style="display: flex; gap: 1rem; justify-content: space-between;">
-              <button class="btn danger" id="btn-config-reset" style="width: auto;">RESET TO DEFAULT</button>
-              <div style="display: flex; gap: 1rem;">
-                  <button class="btn" id="btn-config-cancel" style="width: auto;">ABORT</button>
-                  <button class="btn primary" id="btn-config-save" style="width: auto;">COMMIT CHANGES</button>
-              </div>
-          </div>
+  <!-- Config modal -->
+  <div id="config-modal" style="display:none; position:fixed; inset:0; z-index:1000; justify-content:center; align-items:center;">
+    <div class="mod-card" style="max-height:80vh; display:flex; flex-direction:column;">
+      <h3 id="config-modal-title" style="margin-bottom:1rem;">Module Configuration</h3>
+      <div id="config-modal-content" style="overflow-y:auto; flex:1; padding-right:.8rem; margin-bottom:1rem; display:flex; flex-direction:column; gap:.9rem;"></div>
+      <div style="display:flex; gap:1rem; justify-content:space-between;">
+        <button class="btn danger" id="btn-config-reset">Reset to default</button>
+        <div style="display:flex; gap:.8rem;">
+          <button class="btn" id="btn-config-cancel">Cancel</button>
+          <button class="btn primary" id="btn-config-save">Save changes</button>
+        </div>
       </div>
+    </div>
   </div>
 `
 
-// Core UE4SS Mods that should be grouped
-const CORE_MODS = [
-    'BPModLoaderMod', 
-    'CheatManagerEnablerMod', 
-    'ConsoleBindings', 
-    'Keybinds', 
-    'LineTraceMod',
-    'ActorDumperMod',
-    'BPML_GenericFunctions',
-    'ConsoleCommandsMod',
-    'ConsoleEnablerMod',
-    'JSBLuaProfilerMod',
-    'SplitScreenMod'
-];
+const CORE_MODS = ['BPModLoaderMod','CheatManagerEnablerMod','ConsoleBindings','Keybinds','LineTraceMod','ActorDumperMod','BPML_GenericFunctions','ConsoleCommandsMod','ConsoleEnablerMod','JSBLuaProfilerMod','SplitScreenMod'];
 
 let currentGamePath = null;
 let currentEditingMod = null;
 let currentConfigData = null;
 let loadedMods = [];
 
-// Tab Logic
+// ---------- Tabs ----------
 const navItems = document.querySelectorAll('.nav-item');
 const tabPanes = document.querySelectorAll('.tab-pane');
 const pageTitle = document.getElementById('page-title');
+const TITLES = { dashboard:'Dashboard', ue4ss:'UE4SS Engine', mods:'Module Management', settings:'Settings' };
 
-navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        navItems.forEach(nav => nav.classList.remove('active'));
-        tabPanes.forEach(pane => pane.style.display = 'none');
-        
-        item.classList.add('active');
-        const targetId = item.getAttribute('data-target');
-        document.getElementById('pane-' + targetId).style.display = 'block';
-        
-        if(targetId === 'dashboard') pageTitle.textContent = "SYSTEM DASHBOARD";
-        else if(targetId === 'ue4ss') pageTitle.textContent = "UE4SS ENGINE STATUS";
-        else if(targetId === 'mods') pageTitle.textContent = "MODULE MANAGEMENT";
-        else if(targetId === 'settings') pageTitle.textContent = "SYSTEM SETTINGS";
+navItems.forEach(item => item.addEventListener('click', () => {
+    navItems.forEach(n => n.classList.remove('active'));
+    tabPanes.forEach(p => p.style.display = 'none');
+    item.classList.add('active');
+    const t = item.getAttribute('data-target');
+    document.getElementById('pane-' + t).style.display = 'block';
+    pageTitle.textContent = TITLES[t] || 'Dashboard';
+    if (t === 'mods') loadMods();
+    if (t === 'settings') loadSettings();
+}));
 
-        if (targetId === 'mods') loadMods();
-        if (targetId === 'settings') loadSettings();
-    });
-});
-
-// Collapsible Core Mods
+// ---------- Collapsible core mods ----------
 const coreModsHeader = document.getElementById('core-modules-header');
 const coreModsContainer = document.getElementById('core-modules-container');
 coreModsHeader.addEventListener('click', () => {
-    const isOpen = coreModsContainer.classList.contains('open');
-    if (isOpen) {
-        coreModsContainer.classList.remove('open');
-        coreModsHeader.innerHTML = '<span>[+] CORE UE4SS MODULES</span>';
-    } else {
-        coreModsContainer.classList.add('open');
-        coreModsHeader.innerHTML = '<span>[-] CORE UE4SS MODULES</span>';
-    }
+    const open = coreModsContainer.classList.toggle('open');
+    coreModsHeader.innerHTML = `<span>[${open ? '-' : '+'}] Core UE4SS Modules</span>`;
 });
 
-// Electron IPC Integration
+// ---------- Game / UE4SS ----------
 const gameStatusBadge = document.getElementById('game-status');
 const gamePathText = document.getElementById('game-path-text');
 const btnBrowse = document.getElementById('btn-browse');
@@ -229,657 +206,397 @@ const piracyWarning = document.getElementById('piracy-warning');
 const ue4ssStatusText = document.getElementById('ue4ss-status-text');
 const btnInstallUE4SS = document.getElementById('btn-install-ue4ss');
 
-async function checkGameStatus(customPath = null) {
+function badge(color, text){ gameStatusBadge.innerHTML = `<div class="status-indicator" style="background:${color}"></div> ${text}`; }
+
+async function checkGameStatus(customPath = null){
     if (!window.electronAPI) return;
-    
-    gameStatusBadge.innerHTML = '<div class="status-indicator" style="background: #e2b340; box-shadow: 0 0 8px #e2b340;"></div> SCANNING...';
-    
-    const result = await window.electronAPI.checkGame(customPath);
-    
-    if (result.found) {
-        currentGamePath = result.path;
-        gameStatusBadge.innerHTML = '<div class="status-indicator" style="background: var(--accent); box-shadow: 0 0 8px var(--accent);"></div> TARGET ACQUIRED';
-        gamePathText.textContent = result.path;
+    badge('var(--olive)', 'Scanning…');
+    const r = await window.electronAPI.checkGame(customPath);
+    if (r.found){
+        currentGamePath = r.path;
+        badge('var(--ok)', 'Target acquired');
+        gamePathText.textContent = r.path;
         btnOpenFolder.style.display = 'block';
-        piracyWarning.style.display = result.isCracked ? 'block' : 'none';
-        
-        if (result.ue4ssInstalled) {
-            ue4ssStatusText.innerHTML = `STATUS: <span style="color: var(--accent);">ACTIVE</span>`;
-            btnInstallUE4SS.textContent = "UPDATE / REINSTALL UE4SS";
+        piracyWarning.style.display = r.isCracked ? 'block' : 'none';
+        if (r.ue4ssInstalled){
+            ue4ssStatusText.innerHTML = 'Status: <span style="color:var(--ok)">Active</span>';
+            btnInstallUE4SS.textContent = 'Update / Reinstall UE4SS';
         } else {
-            ue4ssStatusText.innerHTML = `STATUS: <span style="color: var(--danger);">OFFLINE</span>`;
-            btnInstallUE4SS.textContent = "INSTALL UE4SS ENGINE";
+            ue4ssStatusText.innerHTML = 'Status: <span style="color:var(--stamp)">Offline</span>';
+            btnInstallUE4SS.textContent = 'Install UE4SS Engine';
         }
     } else {
         currentGamePath = null;
-        gameStatusBadge.innerHTML = '<div class="status-indicator" style="background: var(--danger); box-shadow: 0 0 8px var(--danger);"></div> TARGET NOT FOUND';
-        gamePathText.textContent = "MANUAL DIRECTORY SELECTION REQUIRED.";
+        badge('var(--stamp)', 'Target not found');
+        gamePathText.textContent = 'Manual directory selection required.';
         btnOpenFolder.style.display = 'none';
         piracyWarning.style.display = 'none';
-        btnInstallUE4SS.textContent = "INSTALL UE4SS ENGINE";
     }
 }
 
 btnBrowse.addEventListener('click', async () => {
-    if (window.electronAPI) {
-        const selectedPath = await window.electronAPI.openDirectory();
-        if (selectedPath) checkGameStatus(selectedPath);
-    }
+    const p = await window.electronAPI?.openDirectory();
+    if (p) checkGameStatus(p);
 });
+btnOpenFolder.addEventListener('click', () => { if (currentGamePath) window.electronAPI.openFolder(currentGamePath); });
 
-btnOpenFolder.addEventListener('click', () => {
-    if (window.electronAPI && currentGamePath) {
-        window.electronAPI.openFolder(currentGamePath);
-    }
+let isGameRunning = false;
+window.electronAPI?.onGameStatusChange?.((running) => {
+    isGameRunning = running;
+    if (running){ btnPlayGame.textContent = '■ Kill Geronimo'; btnPlayGame.classList.add('danger'); btnPlayGame.classList.remove('primary'); }
+    else { btnPlayGame.textContent = '▸ Execute Geronimo'; btnPlayGame.classList.remove('danger'); btnPlayGame.classList.add('primary'); }
 });
-
-let isGameProcessRunning = false;
-
-if (window.electronAPI && window.electronAPI.onGameStatusChange) {
-    window.electronAPI.onGameStatusChange((running) => {
-        isGameProcessRunning = running;
-        if (running) {
-            btnPlayGame.textContent = "KILL GERONIMO";
-            btnPlayGame.classList.add('danger');
-            btnPlayGame.classList.remove('primary');
-        } else {
-            btnPlayGame.textContent = "EXECUTE GERONIMO";
-            btnPlayGame.classList.remove('danger');
-            btnPlayGame.classList.add('primary');
-        }
-    });
-}
 
 btnPlayGame.addEventListener('click', async () => {
-    if (window.electronAPI && currentGamePath) {
-        if (isGameProcessRunning) {
-            await window.electronAPI.killGame();
-        } else {
-            window.electronAPI.launchGame(currentGamePath);
-        }
-    }
+    if (!currentGamePath) return;
+    if (isGameRunning) await window.electronAPI.killGame();
+    else window.electronAPI.launchGame(currentGamePath);
 });
 
 btnBackupSaves.addEventListener('click', async () => {
-    if (window.electronAPI) {
-        btnBackupSaves.textContent = "EXECUTING BACKUP...";
-        const res = await window.electronAPI.backupSaves();
-        if (res.success) {
-            alert("SAVEDATA ARCHIVED AT:\n" + res.path);
-        } else {
-            alert("BACKUP FAILURE: " + res.error);
-        }
-        btnBackupSaves.textContent = "BACKUP SAVEDATA";
-    }
+    btnBackupSaves.textContent = 'Backing up…';
+    const res = await window.electronAPI.backupSaves();
+    alert(res.success ? ('Savedata archived at:\n' + res.path) : ('Backup failed: ' + res.error));
+    btnBackupSaves.textContent = 'Backup Savedata';
 });
 
-if (window.electronAPI && window.electronAPI.onInstallProgress) {
-    window.electronAPI.onInstallProgress((msg) => {
-        btnInstallUE4SS.textContent = msg.toUpperCase();
-    });
-}
+window.electronAPI?.onInstallProgress?.((msg) => { btnInstallUE4SS.textContent = msg; });
 
 btnInstallUE4SS.addEventListener('click', async () => {
-    if (!currentGamePath) return alert("TARGET DIRECTORY REQUIRED.");
-    btnInstallUE4SS.textContent = "ESTABLISHING CONNECTION...";
-    btnInstallUE4SS.disabled = true;
-    
+    if (!currentGamePath) return alert('Select the game directory first.');
+    btnInstallUE4SS.textContent = 'Connecting…'; btnInstallUE4SS.disabled = true;
     const res = await window.electronAPI.installUE4SS(currentGamePath);
-    if (res.success) {
-        alert("UE4SS DEPLOYMENT SUCCESSFUL.");
-        checkGameStatus(currentGamePath);
-    } else {
-        alert("DEPLOYMENT FAILURE: " + res.error);
-    }
+    alert(res.success ? 'UE4SS installed.' : ('Install failed: ' + res.error));
+    if (res.success) checkGameStatus(currentGamePath);
     btnInstallUE4SS.disabled = false;
 });
 
-// Mod Manager Logic
+// ---------- Mods ----------
 const modListContainer = document.getElementById('mod-list-container');
 const btnRefreshMods = document.getElementById('btn-refresh-mods');
 const chkSelectAll = document.getElementById('chk-select-all');
 const btnDeleteSelected = document.getElementById('btn-delete-selected');
 
-function updateBulkDeleteButton() {
-    const checkboxes = document.querySelectorAll('.mod-checkbox');
-    const anyChecked = Array.from(checkboxes).some(c => c.checked);
-    btnDeleteSelected.style.display = anyChecked ? 'block' : 'none';
+function updateBulkDeleteButton(){
+    const any = Array.from(document.querySelectorAll('.mod-checkbox')).some(c => c.checked);
+    btnDeleteSelected.style.display = any ? 'block' : 'none';
 }
-
-chkSelectAll.addEventListener('change', (e) => {
-    const checkboxes = document.querySelectorAll('.mod-checkbox');
-    checkboxes.forEach(c => c.checked = e.target.checked);
+chkSelectAll.addEventListener('change', e => {
+    document.querySelectorAll('.mod-checkbox').forEach(c => c.checked = e.target.checked);
     updateBulkDeleteButton();
 });
-
 btnDeleteSelected.addEventListener('click', async () => {
-    if(!confirm("WARNING: PERMANENTLY PURGE SELECTED MODULES?")) return;
-    
-    const checkboxes = document.querySelectorAll('.mod-checkbox:checked');
-    const modsToDelete = Array.from(checkboxes).map(c => JSON.parse(c.dataset.mod));
-    
-    btnDeleteSelected.textContent = "PURGING...";
-    for (const mod of modsToDelete) {
-        await window.electronAPI.deleteMod(currentGamePath, mod.name, mod.type);
-    }
+    if (!confirm('Permanently purge the selected modules?')) return;
+    const mods = Array.from(document.querySelectorAll('.mod-checkbox:checked')).map(c => JSON.parse(c.dataset.mod));
+    btnDeleteSelected.textContent = 'Purging…';
+    for (const m of mods) await window.electronAPI.deleteMod(currentGamePath, m.name, m.type);
     chkSelectAll.checked = false;
-    btnDeleteSelected.textContent = "PURGE SELECTED";
+    btnDeleteSelected.textContent = 'Purge Selected';
     btnDeleteSelected.style.display = 'none';
     loadMods();
 });
 
 let savedScroll = 0;
-
-async function loadMods() {
-    const mainContent = document.querySelector('.main-content');
-    savedScroll = mainContent ? mainContent.scrollTop : 0;
-
+async function loadMods(){
+    const mc = document.querySelector('.main-content');
+    savedScroll = mc ? mc.scrollTop : 0;
     if (!currentGamePath || !window.electronAPI) return;
-    
     loadedMods = await window.electronAPI.listMods(currentGamePath);
     renderMods();
 }
 
-function renderMods() {
-    if (!loadedMods || loadedMods.length === 0) {
-        modListContainer.innerHTML = '<p style="color: var(--text-muted); font-family: var(--font-mono);">[NO MODULES DETECTED]</p>';
-        chkSelectAll.checked = false;
-        btnDeleteSelected.style.display = 'none';
-        document.getElementById('custom-mods-title').textContent = 'CUSTOM MODULES (0)';
-        return;
+function makeCard(mod, isCore){
+    const card = document.createElement('div');
+    card.className = 'file-card' + (mod.enabled ? '' : ' off');
+
+    if (!isCore){
+        const clip = document.createElement('span'); clip.className = 'clip'; card.appendChild(clip);
+        const tab = document.createElement('span'); tab.className = 'ctab' + (mod.type === 'pak' ? ' pak' : '');
+        tab.textContent = mod.type.toUpperCase(); card.appendChild(tab);
+        const photo = document.createElement('div'); photo.className = 'photo'; card.appendChild(photo);
     }
 
-    const searchInput = document.getElementById('mod-search').value.toLowerCase();
-    const sortValue = document.getElementById('mod-sort').value;
+    const name = document.createElement('div'); name.className = 'fc-name';
+    if (!isCore){
+        const cb = document.createElement('input');
+        cb.type = 'checkbox'; cb.className = 'tactical-checkbox mod-checkbox';
+        cb.dataset.mod = JSON.stringify(mod);
+        cb.addEventListener('change', updateBulkDeleteButton);
+        name.appendChild(cb);
+    }
+    const nameTxt = document.createElement('span'); nameTxt.textContent = mod.name; name.appendChild(nameTxt);
+    card.appendChild(name);
 
-    let filteredMods = loadedMods.filter(mod => mod.name.toLowerCase().includes(searchInput));
+    // rubber-stamp status = the toggle
+    const stamp = document.createElement('div'); stamp.className = 'fc-stamp';
+    stamp.textContent = mod.enabled ? 'Enabled' : 'Filed';
+    stamp.title = 'Click to ' + (mod.enabled ? 'disable' : 'enable');
+    stamp.onclick = async () => {
+        const res = await window.electronAPI.toggleMod(currentGamePath, mod.name, mod.type, !mod.enabled);
+        if (res && !res.success) alert('Toggle error: ' + res.error);
+        loadMods();
+    };
+    card.appendChild(stamp);
 
-    filteredMods.sort((a, b) => {
-        if (sortValue === 'name_asc') return a.name.localeCompare(b.name);
-        if (sortValue === 'enabled_first') return (a.enabled === b.enabled) ? 0 : a.enabled ? -1 : 1;
-        if (sortValue === 'disabled_first') return (a.enabled === b.enabled) ? 0 : a.enabled ? 1 : -1;
-        if (sortValue === 'time_desc') return b.installTime - a.installTime;
-        if (sortValue === 'size_desc') return b.size - a.size;
+    const foot = document.createElement('div'); foot.className = 'fc-foot';
+    const kind = document.createElement('span'); kind.className = 'fc-kind'; kind.textContent = mod.type.toUpperCase();
+    foot.appendChild(kind);
+    const act = document.createElement('div'); act.className = 'fc-act';
+
+    if (mod.type === 'pak'){
+        for (const [dir, label] of [['up','▲'],['down','▼']]){
+            const b = document.createElement('button'); b.className = 'fc-prio'; b.textContent = label;
+            b.title = 'Priority ' + dir;
+            b.onclick = async () => { await window.electronAPI.moveModPriority(currentGamePath, mod.name, dir); loadMods(); };
+            act.appendChild(b);
+        }
+    }
+    if (mod.hasConfig){
+        const cfg = document.createElement('button'); cfg.className = 'fc-link'; cfg.textContent = 'Config ▸';
+        cfg.onclick = () => openConfigModal(mod); act.appendChild(cfg);
+    }
+    if (!isCore){
+        const del = document.createElement('button'); del.className = 'fc-link del'; del.textContent = 'Delete';
+        del.onclick = async () => { if (confirm(`Delete ${mod.name}?`)){ await window.electronAPI.deleteMod(currentGamePath, mod.name, mod.type); loadMods(); } };
+        act.appendChild(del);
+    }
+    foot.appendChild(act);
+    card.appendChild(foot);
+    return card;
+}
+
+function renderMods(){
+    if (!loadedMods || loadedMods.length === 0){
+        modListContainer.innerHTML = '<p style="font-family:var(--type); color:var(--olive);">[ no modules detected ]</p>';
+        chkSelectAll.checked = false; btnDeleteSelected.style.display = 'none';
+        document.getElementById('custom-mods-title').textContent = 'Installed Modules (0)';
+        return;
+    }
+    const q = document.getElementById('mod-search').value.toLowerCase();
+    const sort = document.getElementById('mod-sort').value;
+    let list = loadedMods.filter(m => m.name.toLowerCase().includes(q));
+    list.sort((a,b) => {
+        if (sort === 'name_asc') return a.name.localeCompare(b.name);
+        if (sort === 'enabled_first') return a.enabled === b.enabled ? 0 : a.enabled ? -1 : 1;
+        if (sort === 'disabled_first') return a.enabled === b.enabled ? 0 : a.enabled ? 1 : -1;
+        if (sort === 'time_desc') return b.installTime - a.installTime;
+        if (sort === 'size_desc') return b.size - a.size;
         return 0;
     });
 
     modListContainer.innerHTML = '';
     coreModsContainer.innerHTML = '';
-    
-    let customCount = 0;
-    let coreCount = 0;
-    const lowerCoreMods = CORE_MODS.map(c => c.toLowerCase());
-
-    filteredMods.forEach(mod => {
-        const isCore = lowerCoreMods.includes(mod.name.toLowerCase());
-        if (isCore) coreCount++;
-        else customCount++;
-
-        const modEl = document.createElement('div');
-        modEl.className = 'mod-card';
-        modEl.style.padding = '0.8rem 1rem';
-        modEl.style.display = 'flex';
-        modEl.style.justifyContent = 'space-between';
-        modEl.style.alignItems = 'center';
-
-        const leftDiv = document.createElement('div');
-        leftDiv.style.display = 'flex';
-        leftDiv.style.alignItems = 'center';
-        leftDiv.style.gap = '1rem';
-
-        if (!isCore) {
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'tactical-checkbox mod-checkbox';
-            checkbox.dataset.mod = JSON.stringify(mod);
-            checkbox.addEventListener('change', updateBulkDeleteButton);
-            leftDiv.appendChild(checkbox);
-        }
-
-        const infoDiv = document.createElement('div');
-        infoDiv.innerHTML = `
-            <h4 style="margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); letter-spacing: 0px;">
-                ${mod.name} 
-                <span style="font-size: 0.7rem; color: var(--text-muted); padding: 0.1rem 0.4rem; border: 1px solid var(--border-color);">${mod.type.toUpperCase()}</span>
-            </h4>
-        `;
-
-        leftDiv.appendChild(infoDiv);
-
-        const controlsDiv = document.createElement('div');
-        controlsDiv.style.display = 'flex';
-        controlsDiv.style.gap = '0.5rem';
-        controlsDiv.style.alignItems = 'center';
-
-        // Load Order arrows for Pak mods
-        if (mod.type === 'pak') {
-            const btnUp = document.createElement('button');
-            btnUp.className = 'btn';
-            btnUp.style.padding = '0.3rem 0.6rem';
-            btnUp.textContent = 'PRIO UP';
-            btnUp.onclick = async () => {
-                await window.electronAPI.moveModPriority(currentGamePath, mod.name, 'up');
-                loadMods();
-            };
-            const btnDown = document.createElement('button');
-            btnDown.className = 'btn';
-            btnDown.style.padding = '0.3rem 0.6rem';
-            btnDown.textContent = 'PRIO DN';
-            btnDown.onclick = async () => {
-                await window.electronAPI.moveModPriority(currentGamePath, mod.name, 'down');
-                loadMods();
-            };
-            controlsDiv.appendChild(btnUp);
-            controlsDiv.appendChild(btnDown);
-        }
-
-        if (mod.hasConfig) {
-            const btnConfig = document.createElement('button');
-            btnConfig.className = 'btn';
-            btnConfig.style.padding = '0.3rem 0.8rem';
-            btnConfig.textContent = 'CONFIG';
-            btnConfig.onclick = () => openConfigModal(mod);
-            controlsDiv.appendChild(btnConfig);
-        }
-
-        const btnToggle = document.createElement('button');
-        btnToggle.className = mod.enabled ? 'btn primary' : 'btn';
-        btnToggle.style.width = '100px';
-        btnToggle.style.padding = '0.3rem 0.8rem';
-        btnToggle.textContent = mod.enabled ? 'ENABLED' : 'DISABLED';
-        if(!mod.enabled) {
-            btnToggle.style.background = 'transparent';
-            btnToggle.style.color = 'var(--text-muted)';
-        }
-        btnToggle.onclick = async () => {
-            const res = await window.electronAPI.toggleMod(currentGamePath, mod.name, mod.type, !mod.enabled);
-            if(res && !res.success) alert("TOGGLE ERROR: " + res.error);
-            loadMods();
-        };
-        controlsDiv.appendChild(btnToggle);
-
-        if (!isCore) {
-            const btnDel = document.createElement('button');
-            btnDel.className = 'btn danger';
-            btnDel.style.padding = '0.3rem 0.8rem';
-            btnDel.textContent = 'DELETE';
-            btnDel.onclick = async () => {
-                if(confirm(`PURGE ${mod.name}?`)) {
-                    await window.electronAPI.deleteMod(currentGamePath, mod.name, mod.type);
-                    loadMods();
-                }
-            };
-            controlsDiv.appendChild(btnDel);
-        }
-
-        modEl.appendChild(leftDiv);
-        modEl.appendChild(controlsDiv);
-        
-        if (isCore) {
-            coreModsContainer.appendChild(modEl);
-        } else {
-            modListContainer.appendChild(modEl);
-        }
+    let custom = 0, core = 0;
+    const lc = CORE_MODS.map(c => c.toLowerCase());
+    list.forEach(mod => {
+        const isCore = lc.includes(mod.name.toLowerCase());
+        isCore ? core++ : custom++;
+        (isCore ? coreModsContainer : modListContainer).appendChild(makeCard(mod, isCore));
     });
 
-    document.getElementById('custom-mods-title').textContent = `CUSTOM MODULES (${customCount})`;
-    
-    const isOpen = coreModsContainer.classList.contains('open');
-    coreModsHeader.innerHTML = `<span>[${isOpen ? '-' : '+'}] CORE UE4SS MODULES (${coreCount})</span>`;
+    document.getElementById('custom-mods-title').textContent = `Installed Modules (${custom})`;
+    const open = coreModsContainer.classList.contains('open');
+    coreModsHeader.innerHTML = `<span>[${open ? '-' : '+'}] Core UE4SS Modules (${core})</span>`;
+    if (custom === 0) modListContainer.innerHTML = '<p style="font-family:var(--type); color:var(--olive);">[ no modules match search ]</p>';
+    coreModsHeader.style.display = core === 0 ? 'none' : 'flex';
+    if (core === 0) coreModsContainer.style.display = 'none';
 
-    if (customCount === 0) {
-        modListContainer.innerHTML = '<p style="color: var(--text-muted); font-family: var(--font-mono);">[NO MODULES MATCH QUERY]</p>';
-    }
-    if (coreCount === 0) {
-        coreModsHeader.style.display = 'none';
-        coreModsContainer.style.display = 'none';
-    } else {
-        coreModsHeader.style.display = 'flex';
-    }
-
-    const mainContent = document.querySelector('.main-content');
-    if (mainContent) {
-        mainContent.scrollTop = savedScroll;
-    }
+    const mc = document.querySelector('.main-content');
+    if (mc) mc.scrollTop = savedScroll;
 }
 
 document.getElementById('mod-search').addEventListener('input', renderMods);
 document.getElementById('mod-sort').addEventListener('change', renderMods);
-
 btnRefreshMods.addEventListener('click', loadMods);
 
-// Drag and Drop Logic
+// ---------- Drag & drop ----------
 const dropzone = document.getElementById('dropzone');
-
-dropzone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzone.style.borderColor = 'var(--accent)';
-    dropzone.style.background = 'var(--accent-dim)';
+const DROP_HTML = 'Drag &amp; drop a mod (.zip or .pak)<br><span style="font-size:.7rem; display:block; margin-top:.4rem;">or click to browse files</span>';
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.style.borderColor = 'var(--ink)'; });
+dropzone.addEventListener('dragleave', e => { e.preventDefault(); dropzone.style.borderColor = 'var(--line)'; });
+async function installFrom(filePath){
+    dropzone.innerHTML = '[ installing… ]';
+    const res = await window.electronAPI.installMod(currentGamePath, filePath);
+    if (res.success) loadMods(); else alert('Install failed: ' + res.error);
+    dropzone.innerHTML = DROP_HTML;
+}
+dropzone.addEventListener('drop', async e => {
+    e.preventDefault(); dropzone.style.borderColor = 'var(--line)';
+    if (!currentGamePath) return alert('Select the game directory first.');
+    const f = e.dataTransfer.files[0]; if (!f) return;
+    let p = f.path || (window.electronAPI.getPathForFile ? window.electronAPI.getPathForFile(f) : '');
+    if (!p) return alert('Could not read that file.');
+    installFrom(p);
 });
-
-dropzone.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    dropzone.style.borderColor = 'var(--border-color)';
-    dropzone.style.background = 'transparent';
-});
-
-dropzone.addEventListener('drop', async (e) => {
-    e.preventDefault();
-    dropzone.style.borderColor = 'var(--border-color)';
-    dropzone.style.background = 'transparent';
-    
-    if (!currentGamePath) return alert("TARGET DIRECTORY REQUIRED.");
-
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-        let filePath = files[0].path;
-        if (!filePath && window.electronAPI.getPathForFile) {
-            filePath = window.electronAPI.getPathForFile(files[0]);
-        }
-        
-        if (!filePath || !filePath.toLowerCase().endsWith('.zip')) {
-            alert("ONLY .ZIP ARCHIVES ARE SUPPORTED.");
-            return;
-        }
-
-        dropzone.innerHTML = '[ EXTRACTING ARCHIVE... ]';
-        const result = await window.electronAPI.installMod(currentGamePath, filePath);
-        
-        if (result.success) {
-            loadMods();
-        } else {
-            alert("EXTRACTION FAILED: " + result.error);
-        }
-        dropzone.innerHTML = 'DRAG &amp; DROP MOD (.ZIP or .PAK)<br><span style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">OR CLICK TO BROWSE LOCAL FILES</span>';
-    }
-});
-
 dropzone.addEventListener('click', async () => {
-    if (!currentGamePath) return alert("TARGET DIRECTORY REQUIRED.");
-    const selectedPath = await window.electronAPI.openFileSelect();
-    if (selectedPath) {
-        dropzone.innerHTML = '[ EXTRACTING ARCHIVE... ]';
-        const result = await window.electronAPI.installMod(currentGamePath, selectedPath);
-        if (result.success) {
-            loadMods();
-        } else {
-            alert("EXTRACTION FAILED: " + result.error);
-        }
-        dropzone.innerHTML = 'DRAG &amp; DROP MOD (.ZIP or .PAK)<br><span style="font-size: 0.8rem; margin-top: 0.5rem; display: block;">OR CLICK TO BROWSE LOCAL FILES</span>';
-    }
+    if (!currentGamePath) return alert('Select the game directory first.');
+    const p = await window.electronAPI.openFileSelect();
+    if (p) installFrom(p);
 });
 
-// Config Modal Logic
+// ---------- Config modal ----------
 const configModal = document.getElementById('config-modal');
 const configModalContent = document.getElementById('config-modal-content');
-const btnConfigCancel = document.getElementById('btn-config-cancel');
-const btnConfigSave = document.getElementById('btn-config-save');
+document.getElementById('btn-config-cancel').onclick = () => { configModal.style.display = 'none'; currentEditingMod = null; };
 
-async function openConfigModal(mod) {
+async function openConfigModal(mod){
     currentEditingMod = mod;
     configModal.style.display = 'flex';
-    document.getElementById('config-modal-title').textContent = `CONFIG: ${mod.name}`;
-    configModalContent.innerHTML = '<p>READING REGISTRY...</p>';
-
-    const config = await window.electronAPI.readModConfig(currentGamePath, mod.name, mod.type);
-    if (!config.success) {
-        configModalContent.innerHTML = `<p style="color: var(--danger)">I/O ERROR: ${config.error}</p>`;
-        return;
-    }
-
-    renderConfigFields(config.data);
+    document.getElementById('config-modal-title').textContent = 'Config: ' + mod.name;
+    configModalContent.innerHTML = '<p>Reading…</p>';
+    const c = await window.electronAPI.readModConfig(currentGamePath, mod.name, mod.type);
+    if (!c.success){ configModalContent.innerHTML = `<p style="color:var(--stamp)">Error: ${c.error}</p>`; return; }
+    renderConfigFields(c.data);
 }
 
-function renderConfigFields(data) {
+function renderConfigFields(data){
     currentConfigData = data;
     configModalContent.innerHTML = '';
+    const keys = Object.keys(data);
+    const trio = ['ColorR','ColorG','ColorB'].every(k => keys.includes(k));
+    const toHex = v => Math.max(0, Math.min(255, Math.round(Number(v) || 0))).toString(16).padStart(2,'0');
 
-    // ColorR/ColorG/ColorB trio collapses into one native color picker.
-    const keys = Object.keys(currentConfigData);
-    const hasColorTrio = ['ColorR', 'ColorG', 'ColorB'].every(k => keys.includes(k));
-    const toHex = v => Math.max(0, Math.min(255, Math.round(Number(v) || 0))).toString(16).padStart(2, '0');
-
-    const styleField = (el) => {
-        el.style.background = 'var(--bg-base)';
-        el.style.border = '1px solid var(--border-color)';
-        el.style.color = '#fff';
-        el.style.padding = '0.4rem';
-        el.style.fontFamily = 'var(--font-mono)';
-    };
-
-    for (const [key, value] of Object.entries(currentConfigData)) {
-        if (hasColorTrio && (key === 'ColorG' || key === 'ColorB')) continue; // folded into the picker
-
+    for (const [key, value] of Object.entries(data)){
+        if (trio && (key === 'ColorG' || key === 'ColorB')) continue;
         const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.justifyContent = 'space-between';
-        row.style.alignItems = 'center';
-        row.style.paddingBottom = '0.5rem';
-        row.style.borderBottom = '1px solid var(--border-color)';
-
-        const label = document.createElement('span');
-        label.textContent = key;
-
+        row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; gap:1rem; padding-bottom:.5rem; border-bottom:1px solid var(--line);';
+        const label = document.createElement('span'); label.textContent = key;
         let input;
-        if (hasColorTrio && key === 'ColorR') {
-            // One picker drives the whole trio.
-            label.textContent = 'LIGHT COLOR';
-            input = document.createElement('input');
-            input.type = 'color';
-            input.value = '#' + toHex(currentConfigData.ColorR) + toHex(currentConfigData.ColorG) + toHex(currentConfigData.ColorB);
+
+        if (trio && key === 'ColorR'){
+            label.textContent = 'Light colour';
+            input = document.createElement('input'); input.type = 'color';
+            input.value = '#' + toHex(data.ColorR) + toHex(data.ColorG) + toHex(data.ColorB);
             input.dataset.colorTrio = '1';
-            input.style.width = '80px';
-            input.style.height = '34px';
-            input.style.border = '1px solid var(--border-color)';
-            input.style.background = 'var(--bg-base)';
-            input.style.cursor = 'pointer';
-        } else if (typeof value === 'boolean' || value === 'true' || value === 'false') {
-            input = document.createElement('input');
-            input.type = 'checkbox';
-            input.checked = value === true || value === 'true';
-            input.className = 'tactical-checkbox';
-            input.dataset.key = key;
-        } else if (!isNaN(value)) {
-            if (/bright|intensity|multiplier|volume|scale|alpha|opacity/i.test(key)) {
-                // Slider + synced manual number box.
-                input = document.createElement('div');
-                input.style.display = 'flex';
-                input.style.alignItems = 'center';
-                input.style.gap = '0.6rem';
-
-                const slider = document.createElement('input');
-                slider.type = 'range';
-                slider.min = '0';
-                slider.max = '2';
-                slider.step = '0.01';
-                slider.value = value;
-                slider.style.width = '160px';
-                slider.style.accentColor = 'var(--accent)';
-                slider.style.cursor = 'pointer';
-
-                const num = document.createElement('input');
-                num.type = 'number';
-                num.step = '0.01';
-                num.value = value;
-                num.dataset.key = key;
-                num.style.width = '70px';
-                styleField(num);
-
-                slider.addEventListener('input', () => { num.value = slider.value; });
-                num.addEventListener('input', () => { slider.value = num.value; });
-
-                input.appendChild(slider);
-                input.appendChild(num);
+            input.style.cssText = 'width:80px; height:32px; border:1.5px solid var(--ink); cursor:pointer; background:var(--paper);';
+        } else if (typeof value === 'boolean' || value === 'true' || value === 'false'){
+            input = document.createElement('input'); input.type = 'checkbox'; input.className = 'tactical-checkbox';
+            input.checked = value === true || value === 'true'; input.dataset.key = key;
+        } else if (!isNaN(value)){
+            if (/bright|intensity|multiplier|volume|scale|alpha|opacity/i.test(key)){
+                input = document.createElement('div'); input.style.cssText = 'display:flex; align-items:center; gap:.6rem;';
+                const s = document.createElement('input'); s.type = 'range'; s.min = '0'; s.max = '2'; s.step = '0.01'; s.value = value;
+                s.style.cssText = 'width:150px; accent-color:var(--stamp); cursor:pointer;';
+                const n = document.createElement('input'); n.type = 'number'; n.step = '0.01'; n.value = value; n.dataset.key = key; n.style.width = '68px';
+                s.addEventListener('input', () => n.value = s.value); n.addEventListener('input', () => s.value = n.value);
+                input.append(s, n);
             } else {
-                input = document.createElement('input');
-                input.type = 'number';
-                input.value = value;
-                input.dataset.key = key;
-                styleField(input);
+                input = document.createElement('input'); input.type = 'number'; input.value = value; input.dataset.key = key;
             }
         } else {
-            input = document.createElement('input');
-            input.type = 'text';
-            input.value = value;
-            input.dataset.key = key;
-            styleField(input);
+            input = document.createElement('input'); input.type = 'text'; input.value = value; input.dataset.key = key;
         }
-
-        row.appendChild(label);
-        row.appendChild(input);
+        row.append(label, input);
         configModalContent.appendChild(row);
     }
 }
 
-btnConfigCancel.onclick = () => {
-    configModal.style.display = 'none';
-    currentEditingMod = null;
-};
-
-const btnConfigReset = document.getElementById('btn-config-reset');
-btnConfigReset.onclick = async () => {
+document.getElementById('btn-config-reset').onclick = async () => {
     if (!currentEditingMod) return;
     const res = await window.electronAPI.readModDefaults(currentGamePath, currentEditingMod.name, currentEditingMod.type);
-    if (!res.success) { alert("NO DEFAULTS: " + res.error); return; }
-    // Revert the fields to stock AND persist immediately.
+    if (!res.success) return alert('No defaults: ' + res.error);
     renderConfigFields(res.data);
     const saved = await window.electronAPI.saveModConfig(currentGamePath, currentEditingMod.name, currentEditingMod.type, res.data);
-    if (!saved.success) alert("I/O ERROR: " + saved.error);
+    if (!saved.success) alert('Error: ' + saved.error);
 };
 
-btnConfigSave.onclick = async () => {
+document.getElementById('btn-config-save').onclick = async () => {
     if (!currentEditingMod || !currentConfigData) return;
-
-    const inputs = configModalContent.querySelectorAll('input');
-    const newConfig = { ...currentConfigData };
-
-    inputs.forEach(input => {
-        if (input.dataset.colorTrio) {
-            // "#rrggbb" -> ColorR/ColorG/ColorB (0-255)
-            const hex = input.value.replace('#', '');
-            newConfig.ColorR = parseInt(hex.slice(0, 2), 16);
-            newConfig.ColorG = parseInt(hex.slice(2, 4), 16);
-            newConfig.ColorB = parseInt(hex.slice(4, 6), 16);
+    const newCfg = { ...currentConfigData };
+    configModalContent.querySelectorAll('input').forEach(input => {
+        if (input.dataset.colorTrio){
+            const h = input.value.replace('#','');
+            newCfg.ColorR = parseInt(h.slice(0,2),16); newCfg.ColorG = parseInt(h.slice(2,4),16); newCfg.ColorB = parseInt(h.slice(4,6),16);
             return;
         }
-        const key = input.dataset.key;
-        if (!key) return; // slider half of a slider+number pair carries no key
-        if (input.type === 'checkbox') {
-            newConfig[key] = input.checked;
-        } else if (input.type === 'number') {
-            newConfig[key] = parseFloat(input.value);
-        } else {
-            newConfig[key] = input.value;
-        }
+        const k = input.dataset.key; if (!k) return;
+        newCfg[k] = input.type === 'checkbox' ? input.checked : input.type === 'number' ? parseFloat(input.value) : input.value;
     });
-
-    const result = await window.electronAPI.saveModConfig(currentGamePath, currentEditingMod.name, currentEditingMod.type, newConfig);
-    
-    if (result.success) {
-        configModal.style.display = 'none';
-    } else {
-        alert("I/O ERROR: " + result.error);
-    }
+    const res = await window.electronAPI.saveModConfig(currentGamePath, currentEditingMod.name, currentEditingMod.type, newCfg);
+    if (res.success) configModal.style.display = 'none'; else alert('Error: ' + res.error);
 };
 
-// Settings Logic
+// ---------- Settings ----------
 const chkStartup = document.getElementById('chk-startup');
 const chkGameMonitor = document.getElementById('chk-game-monitor');
+const chkAutoUpdate = document.getElementById('chk-auto-update');
 const btnUninstallMods = document.getElementById('btn-uninstall-mods');
 const btnUninstallApp = document.getElementById('btn-uninstall-app');
 
-const THEMES = {
-    'nightvision': { label: 'NIGHT VISION', accent: '#50C878', bgBase: '#050505', bgPanel: '#0d0d0d', bgCard: '#141414', border: '#222222', text: '#e0e0e0', muted: '#888888' },
-    'amber':       { label: 'AMBER CRT',    accent: '#f0a83c', bgBase: '#0a0803', bgPanel: '#12100a', bgCard: '#1a1610', border: '#2a2416', text: '#ece4d4', muted: '#8a8070' },
-    'ice':         { label: 'ICE BLUE',     accent: '#5fb4e6', bgBase: '#04070a', bgPanel: '#0b1016', bgCard: '#111820', border: '#1d2833', text: '#dce8f2', muted: '#7d8f9e' },
-    'crimson':     { label: 'CRIMSON',      accent: '#e05a5a', bgBase: '#080404', bgPanel: '#110b0b', bgCard: '#1a1111', border: '#2b1c1c', text: '#f0dede', muted: '#94807f' },
-};
-
-// structural layouts — where the nav/panels physically sit
-const STRUCTURES = {
-    'classic':  { label: 'SIDEBAR LEFT'  },
-    'mirror':   { label: 'SIDEBAR RIGHT' },
-    'topbar':   { label: 'TOP BAR'       },
-};
-
-function applyStructure(key) {
-    if (!STRUCTURES[key]) key = 'classic';
-    document.body.dataset.ui = key;
-    localStorage.setItem('gm_structure', key);
+const PAPERS = { manila:'Manila', blueprint:'Blueprint', carbon:'Carbon' };
+function applyPaper(key){
+    if (!PAPERS[key]) key = 'manila';
+    if (key === 'manila') document.documentElement.removeAttribute('data-paper');
+    else document.documentElement.setAttribute('data-paper', key);
+    localStorage.setItem('gm_paper', key);
     renderAppearance();
 }
+function renderAppearance(){
+    const tg = document.getElementById('theme-grid'); if (!tg) return;
+    const cur = localStorage.getItem('gm_paper') || 'manila';
+    const swatch = { manila:'#e5dbc1', blueprint:'#224463', carbon:'#211e19' };
+    tg.innerHTML = Object.entries(PAPERS).map(([k,label]) =>
+        `<button class="appearance-chip${k === cur ? ' active' : ''}" data-paper="${k}"><span class="chip-dot" style="background:${swatch[k]}"></span>${label}</button>`).join('');
+    tg.querySelectorAll('[data-paper]').forEach(b => b.onclick = () => applyPaper(b.dataset.paper));
+}
+applyPaper(localStorage.getItem('gm_paper') || 'manila');
 
-function applyTheme(key) {
-    const t = THEMES[key] || THEMES.nightvision;
-    const r = document.documentElement.style;
-    r.setProperty('--accent', t.accent);
-    r.setProperty('--accent-dim', hexToRgba(t.accent, 0.2));
-    r.setProperty('--bg-base', t.bgBase);
-    r.setProperty('--bg-panel', t.bgPanel);
-    r.setProperty('--bg-card', t.bgCard);
-    r.setProperty('--border-color', t.border);
-    r.setProperty('--text-main', t.text);
-    r.setProperty('--text-muted', t.muted);
-    localStorage.setItem('gm_theme', key);
+async function loadSettings(){
     renderAppearance();
+    if (!window.electronAPI) return;
+    const s = await window.electronAPI.getSettings();
+    chkStartup.checked = !!s.openAtLogin;
+    chkGameMonitor.checked = !!s.gameMonitor;
+    chkAutoUpdate.checked = s.autoUpdate !== false;
+    document.getElementById('cur-version').textContent = 'v' + (await currentVersion());
 }
-
-function hexToRgba(hex, a) {
-    const n = parseInt(hex.replace('#',''), 16);
-    return `rgba(${(n>>16)&255}, ${(n>>8)&255}, ${n&255}, ${a})`;
-}
-
-function renderAppearance() {
-    const tg = document.getElementById('theme-grid');
-    const sg = document.getElementById('structure-grid');
-    if (!tg) return;
-    const curT = localStorage.getItem('gm_theme') || 'nightvision';
-    const curS = localStorage.getItem('gm_structure') || 'classic';
-    tg.innerHTML = Object.entries(THEMES).map(([k, t]) =>
-        `<button class="appearance-chip${k === curT ? ' active' : ''}" data-theme="${k}">
-            <span class="chip-dot" style="background:${t.accent}; color:${t.accent};"></span>${t.label}
-        </button>`).join('');
-    tg.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
-    if (sg) {
-        sg.innerHTML = Object.entries(STRUCTURES).map(([k, s]) =>
-            `<button class="appearance-chip${k === curS ? ' active' : ''}" data-structure="${k}">${s.label}</button>`).join('');
-        sg.querySelectorAll('[data-structure]').forEach(b => b.onclick = () => applyStructure(b.dataset.structure));
-    }
-}
-
-// restore saved appearance on boot
-applyTheme(localStorage.getItem('gm_theme') || 'nightvision');
-applyStructure(localStorage.getItem('gm_structure') || 'classic');
-
-async function loadSettings() {
-    renderAppearance();
-    if(!window.electronAPI) return;
-    const settings = await window.electronAPI.getSettings();
-    chkStartup.checked = settings.openAtLogin;
-    chkGameMonitor.checked = settings.gameMonitor;
-}
-
-chkStartup.addEventListener('change', async (e) => {
-    await window.electronAPI.setSetting('openAtLogin', e.target.checked);
-});
-
-chkGameMonitor.addEventListener('change', async (e) => {
-    await window.electronAPI.setSetting('gameMonitor', e.target.checked);
-});
+chkStartup.addEventListener('change', e => window.electronAPI.setSetting('openAtLogin', e.target.checked));
+chkGameMonitor.addEventListener('change', e => window.electronAPI.setSetting('gameMonitor', e.target.checked));
+chkAutoUpdate.addEventListener('change', e => window.electronAPI.setSetting('autoUpdate', e.target.checked));
 
 btnUninstallMods.addEventListener('click', async () => {
-    if(confirm("DANGER: PERMANENT PURGE OF ALL CUSTOM DATA. PROCEED?")) {
-        await window.electronAPI.uninstallAllMods(currentGamePath);
-        alert("PURGE COMPLETE.");
-        loadMods();
-    }
+    if (confirm('Permanently delete all installed modules?')){ await window.electronAPI.uninstallAllMods(currentGamePath); alert('Done.'); loadMods(); }
 });
-
 btnUninstallApp.addEventListener('click', async () => {
-    if(confirm("WARNING: UNINSTALL GERMODIMO OS PROTOCOL?")) {
-        await window.electronAPI.uninstallApp();
-    }
+    if (confirm('Uninstall GerMODimo?')) await window.electronAPI.uninstallApp();
 });
 
-// Initial Check
+// ---------- Updates ----------
+const updateBanner = document.getElementById('update-banner');
+const ubVersion = document.getElementById('ub-version');
+const updateStatus = document.getElementById('update-status');
+let pendingUpdate = null;
+
+async function currentVersion(){
+    const r = await window.electronAPI?.checkForUpdate?.();
+    return r?.current || '—';
+}
+function showUpdate(info){
+    pendingUpdate = info;
+    ubVersion.textContent = `Version ${info.latest} is available (you have ${info.current}).`;
+    updateBanner.style.display = 'flex';
+}
+async function runDownload(){
+    if (!pendingUpdate) return;
+    const btn = document.getElementById('btn-update-now');
+    btn.textContent = 'Downloading…'; btn.disabled = true;
+    window.electronAPI.onUpdateProgress?.(m => { btn.textContent = m; });
+    const res = await window.electronAPI.downloadUpdate(pendingUpdate);
+    if (res.ok){ btn.textContent = 'Launching installer…'; }
+    else { alert('Update failed: ' + res.error); btn.textContent = 'Update now'; btn.disabled = false; }
+}
+document.getElementById('btn-update-now').onclick = runDownload;
+document.getElementById('btn-update-dismiss').onclick = () => { updateBanner.style.display = 'none'; };
+
+document.getElementById('btn-check-update').addEventListener('click', async () => {
+    updateStatus.innerHTML = 'Checking…';
+    const r = await window.electronAPI.checkForUpdate();
+    if (!r.ok){ updateStatus.innerHTML = 'Check failed: ' + r.error; return; }
+    if (r.available){ updateStatus.innerHTML = `<b>Update available: v${r.latest}</b>`; showUpdate(r); }
+    else updateStatus.innerHTML = `Up to date — v${r.current}`;
+});
+
+window.electronAPI?.onUpdateAvailable?.(info => showUpdate(info));
+
+// ---------- boot ----------
 checkGameStatus();

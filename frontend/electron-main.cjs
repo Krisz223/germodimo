@@ -1,16 +1,90 @@
-const { app, BrowserWindow, ipcMain, dialog, shell, Tray, Menu, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, Tray, Menu, nativeImage, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const extract = require('extract-zip');
 const https = require('https');
+const os = require('os');
 const { exec } = require('child_process');
+
+// ---- Update checking (GitHub Releases) ----
+const UPDATE_REPO = 'Krisz223/germodimo';
+let updateTimer = null;
+
+function httpJson(url) {
+    return new Promise((resolve, reject) => {
+        https.get(url, { headers: { 'User-Agent': 'GerMODimo-Updater', 'Accept': 'application/vnd.github+json' } }, (res) => {
+            if (res.statusCode === 301 || res.statusCode === 302) return httpJson(res.headers.location).then(resolve).catch(reject);
+            if (res.statusCode !== 200) { res.resume(); return reject(new Error('HTTP ' + res.statusCode)); }
+            let data = '';
+            res.on('data', c => data += c);
+            res.on('end', () => { try { resolve(JSON.parse(data)); } catch (e) { reject(e); } });
+        }).on('error', reject);
+    });
+}
+
+// compare "1.2.10" vs "1.3.0" -> true if b is newer than a
+function isNewer(a, b) {
+    const pa = String(a).replace(/^v/, '').split('.').map(n => parseInt(n, 10) || 0);
+    const pb = String(b).replace(/^v/, '').split('.').map(n => parseInt(n, 10) || 0);
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+        const x = pa[i] || 0, y = pb[i] || 0;
+        if (y > x) return true;
+        if (y < x) return false;
+    }
+    return false;
+}
+
+async function checkForUpdate() {
+    const rel = await httpJson(`https://api.github.com/repos/${UPDATE_REPO}/releases/latest`);
+    const latest = (rel.tag_name || '').replace(/^v/, '');
+    const current = app.getVersion();
+    const asset = (rel.assets || []).find(a => /Setup.*\.exe$/i.test(a.name));
+    return {
+        current,
+        latest,
+        available: latest && isNewer(current, latest),
+        notes: rel.body || '',
+        pageUrl: rel.html_url,
+        assetUrl: asset ? asset.browser_download_url : null,
+        assetName: asset ? asset.name : null,
+        assetSize: asset ? asset.size : 0,
+    };
+}
+
+function notifyUpdate(info) {
+    if (!Notification.isSupported()) return;
+    const n = new Notification({
+        title: 'GerMODimo update available',
+        body: `Version ${info.latest} is out (you have ${info.current}). Click to update.`,
+        silent: false,
+    });
+    n.on('click', () => { if (mainWindow) { mainWindow.show(); mainWindow.webContents.send('update:available', info); } });
+    n.show();
+}
+
+async function backgroundUpdateCheck() {
+    try {
+        const info = await checkForUpdate();
+        if (info.available) {
+            if (mainWindow) mainWindow.webContents.send('update:available', info);
+            notifyUpdate(info);
+        }
+    } catch (e) { /* offline / rate-limited — stay quiet on background checks */ }
+}
+
+function startUpdateSchedule() {
+    if (updateTimer) clearInterval(updateTimer);
+    if (!currentSettings.autoUpdate) return;
+    setTimeout(backgroundUpdateCheck, 8000);            // shortly after launch
+    updateTimer = setInterval(backgroundUpdateCheck, 6 * 60 * 60 * 1000); // every 6h
+}
 
 const settingsPath = path.join(app.getPath('userData'), 'settings.json');
 function loadSettings() {
     if (fs.existsSync(settingsPath)) {
         return JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
     }
-    return { openAtLogin: false, gameMonitor: false };
+    return { openAtLogin: false, gameMonitor: false, autoUpdate: true };
 }
 function saveSettings(settings) {
     fs.writeFileSync(settingsPath, JSON.stringify(settings));
@@ -120,6 +194,7 @@ app.whenReady().then(() => {
   tray.on('click', () => mainWindow.show());
   
   startTasklistPolling();
+  startUpdateSchedule();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -656,7 +731,24 @@ ipcMain.handle('settings:get', async () => {
 ipcMain.handle('settings:set', async (event, { key, value }) => {
     currentSettings[key] = value;
     saveSettings(currentSettings);
+    if (key === 'autoUpdate') startUpdateSchedule();
     return { success: true };
+});
+
+// ---- Update IPC ----
+ipcMain.handle('update:check', async () => {
+    try { return { ok: true, ...(await checkForUpdate()) }; }
+    catch (e) { return { ok: false, error: e.message }; }
+});
+
+ipcMain.handle('update:download', async (event, { assetUrl, assetName, pageUrl }) => {
+    try {
+        if (!assetUrl) { if (pageUrl) shell.openExternal(pageUrl); return { ok: true, opened: 'page' }; }
+        const dest = path.join(os.tmpdir(), assetName || 'GerMODimo-Setup.exe');
+        await downloadFile(assetUrl, dest, (msg) => { if (mainWindow) mainWindow.webContents.send('update:progress', msg); });
+        await shell.openPath(dest);   // launch the installer; user completes it
+        return { ok: true, path: dest };
+    } catch (e) { return { ok: false, error: e.message }; }
 });
 
 ipcMain.handle('system:uninstallAllMods', async (event, gamePath) => {

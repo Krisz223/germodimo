@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.3.0
+
+### Added
+- **Brand-new "Field Dossier" interface.** A complete visual redesign — GerMODimo now looks like a
+  printed operations file. Binder-tab navigation, a document-style header, a stamped Execute button,
+  and mods presented as manila **file cards** (paperclip, type tab, rubber-stamp Enabled/Filed, a
+  thumbnail plate). Same features throughout — install, toggle, config, delete, pak support.
+- **Paper stocks** (Settings → Appearance): Manila (default), Blueprint, and Carbon — three colour
+  treatments of the dossier look, remembered between sessions.
+- **Updates**
+  - **Automatic update checks** — a new Settings toggle checks GitHub on launch (and every few hours)
+    and raises a **Windows notification** when a new version ships.
+  - **Manual "Check for updates"** button in Settings, showing your current version and the latest.
+  - **One-click update** — when an update is found, an "Update now" banner downloads the new installer
+    and launches it for you.
+
+### Changed
+- The old tactical-terminal theme and the sidebar-layout options have been replaced by the dossier
+  design and its paper stocks.
+
 ## 1.2.0
 
 ### Added

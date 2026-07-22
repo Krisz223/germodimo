@@ -24,5 +24,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setSetting: (key, value) => ipcRenderer.invoke('settings:set', { key, value }),
   uninstallAllMods: (gamePath) => ipcRenderer.invoke('system:uninstallAllMods', gamePath),
   uninstallApp: () => ipcRenderer.invoke('system:uninstallApp'),
-  getPathForFile: (file) => webUtils.getPathForFile(file)
+  getPathForFile: (file) => webUtils.getPathForFile(file),
+
+  checkForUpdate: () => ipcRenderer.invoke('update:check'),
+  downloadUpdate: (info) => ipcRenderer.invoke('update:download', info),
+  onUpdateAvailable: (cb) => ipcRenderer.on('update:available', (_e, info) => cb(info)),
+  onUpdateProgress: (cb) => ipcRenderer.on('update:progress', (_e, msg) => cb(msg))
 });
