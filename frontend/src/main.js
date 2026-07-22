@@ -130,10 +130,6 @@ document.querySelector('#app').innerHTML = `
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">INTERFACE LAYOUT</div>
                     <div id="structure-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
                 </div>
-                <div style="margin-top: 1.5rem;">
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.6rem;">SPACING DENSITY</div>
-                    <div id="layout-grid" style="display: flex; flex-wrap: wrap; gap: 0.6rem;"></div>
-                </div>
             </div>
 
             <div class="mod-card" style="border-color: var(--danger-dim);">
@@ -799,18 +795,11 @@ const THEMES = {
     'crimson':     { label: 'CRIMSON',      accent: '#e05a5a', bgBase: '#080404', bgPanel: '#110b0b', bgCard: '#1a1111', border: '#2b1c1c', text: '#f0dede', muted: '#94807f' },
 };
 
-const LAYOUTS = {
-    'comfortable': { label: 'COMFORTABLE', scale: '1',    pad: '1.5rem', gap: '1rem'   },
-    'compact':     { label: 'COMPACT',     scale: '0.92', pad: '1rem',   gap: '0.6rem' },
-    'dense':       { label: 'DENSE',       scale: '0.85', pad: '0.7rem', gap: '0.4rem' },
-};
-
-// actual structural layouts — where the nav/panels physically sit
+// structural layouts — where the nav/panels physically sit
 const STRUCTURES = {
     'classic':  { label: 'SIDEBAR LEFT'  },
     'mirror':   { label: 'SIDEBAR RIGHT' },
     'topbar':   { label: 'TOP BAR'       },
-    'rail':     { label: 'ICON RAIL'     },
 };
 
 function applyStructure(key) {
@@ -835,52 +824,31 @@ function applyTheme(key) {
     renderAppearance();
 }
 
-function applyLayout(key) {
-    const l = LAYOUTS[key] || LAYOUTS.comfortable;
-    const r = document.documentElement.style;
-    r.setProperty('--ui-scale', l.scale);
-    r.setProperty('--ui-pad', l.pad);
-    r.setProperty('--ui-gap', l.gap);
-    document.body.dataset.layout = key;
-    localStorage.setItem('gm_layout', key);
-    renderAppearance();
-}
-
 function hexToRgba(hex, a) {
     const n = parseInt(hex.replace('#',''), 16);
     return `rgba(${(n>>16)&255}, ${(n>>8)&255}, ${n&255}, ${a})`;
 }
 
-function chipHtml(active, label, accent) {
-    return `<button class="btn-secondary appearance-chip" style="${active ? `border-color:${accent}; color:${accent};` : ''}">${label}</button>`;
-}
-
 function renderAppearance() {
     const tg = document.getElementById('theme-grid');
-    const lg = document.getElementById('layout-grid');
     const sg = document.getElementById('structure-grid');
-    if (!tg || !lg) return;
+    if (!tg) return;
     const curT = localStorage.getItem('gm_theme') || 'nightvision';
-    const curL = localStorage.getItem('gm_layout') || 'comfortable';
     const curS = localStorage.getItem('gm_structure') || 'classic';
+    tg.innerHTML = Object.entries(THEMES).map(([k, t]) =>
+        `<button class="appearance-chip${k === curT ? ' active' : ''}" data-theme="${k}">
+            <span class="chip-dot" style="background:${t.accent}; color:${t.accent};"></span>${t.label}
+        </button>`).join('');
+    tg.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
     if (sg) {
         sg.innerHTML = Object.entries(STRUCTURES).map(([k, s]) =>
             `<button class="appearance-chip${k === curS ? ' active' : ''}" data-structure="${k}">${s.label}</button>`).join('');
         sg.querySelectorAll('[data-structure]').forEach(b => b.onclick = () => applyStructure(b.dataset.structure));
     }
-    tg.innerHTML = Object.entries(THEMES).map(([k, t]) =>
-        `<button class="appearance-chip${k === curT ? ' active' : ''}" data-theme="${k}">
-            <span class="chip-dot" style="background:${t.accent}; color:${t.accent};"></span>${t.label}
-        </button>`).join('');
-    lg.innerHTML = Object.entries(LAYOUTS).map(([k, l]) =>
-        `<button class="appearance-chip${k === curL ? ' active' : ''}" data-layout="${k}">${l.label}</button>`).join('');
-    tg.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
-    lg.querySelectorAll('[data-layout]').forEach(b => b.onclick = () => applyLayout(b.dataset.layout));
 }
 
 // restore saved appearance on boot
 applyTheme(localStorage.getItem('gm_theme') || 'nightvision');
-applyLayout(localStorage.getItem('gm_layout') || 'comfortable');
 applyStructure(localStorage.getItem('gm_structure') || 'classic');
 
 async function loadSettings() {

@@ -13,9 +13,6 @@
   --border-color: #222222;
   --font-mono: 'Share Tech Mono', monospace;
   --font-sans: 'Inter', sans-serif;
-  --ui-scale: 1;
-  --ui-pad: 1.5rem;
-  --ui-gap: 1rem;
 }
 
 /* ---- Appearance chips (Settings) ---- */
@@ -49,21 +46,6 @@
   flex-shrink: 0;
   box-shadow: 0 0 6px currentColor;
 }
-
-/* ---- Layout density: real spacing/structure changes, not just text size ---- */
-#mod-list-container { gap: var(--ui-gap) !important; }
-.mod-card { padding: var(--ui-pad); }
-
-body[data-layout="compact"] .mod-card h4 { font-size: 0.95rem; }
-body[data-layout="compact"] .btn { padding: 0.35rem 0.7rem; font-size: 0.75rem; }
-
-/* dense: strip the card chrome down to tight list rows */
-body[data-layout="dense"] .mod-card h4 { font-size: 0.9rem; margin-bottom: 0 !important; }
-body[data-layout="dense"] .btn { padding: 0.25rem 0.55rem; font-size: 0.7rem; }
-body[data-layout="dense"] #mod-list-container .mod-card::before,
-body[data-layout="dense"] #mod-list-container .mod-card::after { display: none; }
-body[data-layout="dense"] #mod-list-container .mod-card { border-left-width: 2px; }
-body[data-layout="dense"] .header { margin-bottom: 0.75rem !important; }
 
 * {
   box-sizing: border-box;
@@ -392,18 +374,6 @@ h1, h2, h3, h4 {
   display: flex;
 }
 
-/* ---- layout density overrides (must come last to beat .mod-card base rule) ---- */
-body[data-layout="comfortable"] .mod-card { padding: 1.5rem; }
-body[data-layout="compact"]     .mod-card { padding: 1rem; }
-body[data-layout="dense"]       .mod-card { padding: 0.6rem 0.9rem; }
-
-body[data-layout="comfortable"] #mod-list-container { gap: 1rem !important; }
-body[data-layout="compact"]     #mod-list-container { gap: 0.5rem !important; }
-body[data-layout="dense"]       #mod-list-container { gap: 0.25rem !important; }
-
-body[data-layout="compact"] .main-content { padding: 1.5rem 2rem; }
-body[data-layout="dense"]   .main-content { padding: 1rem 1.5rem; }
-
 /* ================= INTERFACE LAYOUT (structural) ================= */
 
 /* --- SIDEBAR RIGHT: nav physically moves to the other side --- */
@@ -452,26 +422,3 @@ body[data-ui="topbar"] .nav-item.active {
   border-bottom: 3px solid var(--accent);
 }
 
-/* --- ICON RAIL: collapsed sidebar, labels hidden until hover --- */
-body[data-ui="rail"] .sidebar {
-  width: 68px;
-  overflow: hidden;
-  transition: width .18s ease;
-}
-body[data-ui="rail"] .sidebar:hover { width: 250px; }
-body[data-ui="rail"] .brand { padding: 1rem; justify-content: center; }
-body[data-ui="rail"] .brand h1 { display: none; }
-body[data-ui="rail"] .sidebar:hover .brand { justify-content: flex-start; padding-left: 1.5rem; }
-body[data-ui="rail"] .sidebar:hover .brand h1 { display: block; }
-body[data-ui="rail"] .nav-item {
-  padding: 1rem 0;
-  text-align: center;
-  font-size: 0.8rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-body[data-ui="rail"] .sidebar:hover .nav-item {
-  padding: 1rem 1.5rem;
-  text-align: left;
-  font-size: 1.1rem;
-}

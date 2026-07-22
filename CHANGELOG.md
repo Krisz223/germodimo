@@ -3,47 +3,27 @@
 ## 1.2.0
 
 ### Added
-- **Interface layouts** — the navigation and panels physically rearrange, under
+- **Interface layouts** — the navigation physically rearranges, under
   **Settings → Appearance → Interface Layout**:
   - **Sidebar Left** — the original layout.
-  - **Sidebar Right** — navigation moves to the right edge, nav items and the active indicator
+  - **Sidebar Right** — navigation moves to the right edge; nav items and the active indicator
     mirror with it.
   - **Top Bar** — navigation becomes a horizontal bar across the top with underline indicators,
     and content uses the full window width.
-  - **Icon Rail** — the sidebar collapses to a narrow rail and expands on hover, for maximum
-    content space.
-- Spacing density is now a separate control from layout, so the two can be combined freely.
-
-
-## 1.1.1
-
-### Fixed
-- **Theme/layout buttons restyled.** They were rendering as plain light-coloured browser buttons
-  that clashed with the interface. They are now dark tactical chips with a glowing colour dot, and
-  the selected one is tinted in the active accent.
-- **Layout density now actually changes the layout.** Previously it only scaled text. It now
-  adjusts card padding, page margins, list spacing, button sizes and heading sizes — Comfortable,
-  Compact and Dense are meaningfully different.
-
-
-## 1.1.0
-
-### Added
-- **Colour themes** — four schemes selectable in Settings → Appearance: Night Vision (default),
-  Amber CRT, Ice Blue, and Crimson. Applied instantly and remembered between sessions.
-- **Layout density** — Comfortable / Compact / Dense, for fitting more modules on screen.
+- **Colour themes** — Night Vision (default), Amber CRT, Ice Blue, Crimson. Applied instantly and
+  remembered between sessions.
 
 ### Changed — pak mod support
-- **Fixed the pak install location.** Pak mods now install to `Geronimo\Content\Paks\Mods\`,
-  which is where Geronimo actually mounts them. They were previously going to `~mods\`, where the
-  game does not pick them up.
-- **IoStore mods are now supported properly.** Modern pak mods ship as a three-file set
-  (`.pak` + `.ucas` + `.utoc`). GerMODimo now treats that set as a single mod — it installs,
-  lists, enables/disables, and removes all three together instead of only handling the `.pak`.
-- **Drag and drop accepts pak files directly.** You can drop a `.pak`, `.ucas`, or `.utoc`
-  straight onto the drop zone (no zip required); any sibling files belonging to the same mod are
-  installed alongside it, so a mod can't end up half-installed. The file browser accepts them too.
-- Mod list now shows the combined size of a pak mod's files.
+- **Fixed the pak install location.** Pak mods now install to `Geronimo\Content\Paks\Mods\`.
+  They previously went to `~mods\`, which the game does not mount — so pak mods installed through
+  GerMODimo never loaded.
+- **IoStore mods are now supported.** Modern pak mods ship as a `.pak` + `.ucas` + `.utoc` set.
+  GerMODimo treats that set as a single mod — installing, listing, enabling/disabling and removing
+  all three together instead of only handling the `.pak`.
+- **Drag and drop accepts pak files directly** — drop a `.pak`, `.ucas` or `.utoc` (no zip needed)
+  and any sibling files belonging to the same mod are installed with it, so a mod can't end up
+  half-installed. The file browser accepts them too.
+- Pak mods now report their combined size in the list.
 
 ## 1.0.0
 - Initial release: game detection, one-click UE4SS install, drag-and-drop mod management,

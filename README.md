@@ -71,8 +71,8 @@ Script mods install to `…\GERONIMO\Geronimo\Binaries\Win64\ue4ss\Mods\`; pak m
 set — GerMODimo handles all three as one mod, so enabling, disabling, and removing keeps them
 together.
 
-You can change the colour theme, interface layout (sidebar left/right, top bar, icon rail) and
-spacing density under **Settings → Appearance**.
+You can change the colour theme and interface layout (sidebar left, sidebar right, or top bar)
+under **Settings → Appearance**.
 
 ---
 
