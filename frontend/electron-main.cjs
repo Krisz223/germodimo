@@ -133,12 +133,12 @@ function createWindow() {
     width: 1280,
     height: 800,
     title: 'GerMODimo',
-    backgroundColor: '#050505',
+    backgroundColor: '#37311f',
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: '#050505',
-      symbolColor: '#50C878',
-      height: 32
+      color: '#37311f',
+      symbolColor: '#d8ccae',
+      height: 30
     },
     autoHideMenuBar: true,
     webPreferences: {

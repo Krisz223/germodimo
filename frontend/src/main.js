@@ -386,13 +386,27 @@ function renderMods(){
 
     modListContainer.innerHTML = '';
     coreModsContainer.innerHTML = '';
-    let custom = 0, core = 0;
     const lc = CORE_MODS.map(c => c.toLowerCase());
+
+    const scripts = [], paks = [];
+    let core = 0;
     list.forEach(mod => {
-        const isCore = lc.includes(mod.name.toLowerCase());
-        isCore ? core++ : custom++;
-        (isCore ? coreModsContainer : modListContainer).appendChild(makeCard(mod, isCore));
+        if (lc.includes(mod.name.toLowerCase())) { core++; coreModsContainer.appendChild(makeCard(mod, true)); return; }
+        (mod.type === 'pak' ? paks : scripts).push(mod);
     });
+    const custom = scripts.length + paks.length;
+
+    const addGroup = (label, arr) => {
+        if (!arr.length) return;
+        const h = document.createElement('div'); h.className = 'mod-group-head';
+        h.innerHTML = `<span>${label} (${arr.length})</span>`;
+        modListContainer.appendChild(h);
+        const grid = document.createElement('div'); grid.className = 'mod-grid';
+        arr.forEach(m => grid.appendChild(makeCard(m, false)));
+        modListContainer.appendChild(grid);
+    };
+    addGroup('Script Modules', scripts);
+    addGroup('Pak Modules', paks);
 
     document.getElementById('custom-mods-title').textContent = `Installed Modules (${custom})`;
     const open = coreModsContainer.classList.contains('open');
@@ -523,7 +537,7 @@ const chkAutoUpdate = document.getElementById('chk-auto-update');
 const btnUninstallMods = document.getElementById('btn-uninstall-mods');
 const btnUninstallApp = document.getElementById('btn-uninstall-app');
 
-const PAPERS = { manila:'Manila', blueprint:'Blueprint', carbon:'Carbon' };
+const PAPERS = { manila:'Manila', blueprint:'Blueprint', carbon:'Carbon', classic:'Classic (Tactical)' };
 function applyPaper(key){
     if (!PAPERS[key]) key = 'manila';
     if (key === 'manila') document.documentElement.removeAttribute('data-paper');
@@ -534,7 +548,7 @@ function applyPaper(key){
 function renderAppearance(){
     const tg = document.getElementById('theme-grid'); if (!tg) return;
     const cur = localStorage.getItem('gm_paper') || 'manila';
-    const swatch = { manila:'#e5dbc1', blueprint:'#224463', carbon:'#211e19' };
+    const swatch = { manila:'#d8ccae', blueprint:'#224463', carbon:'#211e19', classic:'#50C878' };
     tg.innerHTML = Object.entries(PAPERS).map(([k,label]) =>
         `<button class="appearance-chip${k === cur ? ' active' : ''}" data-paper="${k}"><span class="chip-dot" style="background:${swatch[k]}"></span>${label}</button>`).join('');
     tg.querySelectorAll('[data-paper]').forEach(b => b.onclick = () => applyPaper(b.dataset.paper));

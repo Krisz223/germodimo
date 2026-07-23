@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.1
+
+### Changed / fixed
+- **Softer palette** — the manila paper is less bright and the ink is a warm dark sepia instead of
+  near-black, easier on the eyes.
+- **Readable card buttons** — Config, Delete and priority controls on mod cards are larger and
+  higher-contrast (they were too small).
+- **Separate sections** for **Script Modules** and **Pak Modules** in the mod list.
+- **Restored the old look** — a new **Classic (Tactical)** paper stock brings back the dark
+  night-vision terminal theme (Settings → Appearance).
+- **Window controls** (minimise / maximise / close) now match the dossier colours.
+
+
 ## 1.3.0
 
 ### Added

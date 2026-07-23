@@ -6,18 +6,18 @@
    ============================================================ */
 
 :root{
-  /* paper palette (Manila, default) */
-  --paper:#e5dbc1;
-  --paper2:#f0e8d4;
-  --paperInset:#dccfab;
-  --ink:#221f18;
-  --ink2:#3d3a2e;
-  --stamp:#b23a2e;
-  --ok:#4c6b34;
-  --olive:#6f6c46;
-  --blue:#35566b;
-  --line:#bfb188;
-  --shadow:rgba(34,31,24,.16);
+  /* paper palette (Manila, default) — softened: warmer paper, dark-sepia ink (not pure black) */
+  --paper:#d8ccae;
+  --paper2:#e2d8bd;
+  --paperInset:#cebf9c;
+  --ink:#37311f;
+  --ink2:#544d38;
+  --stamp:#a8412f;
+  --ok:#556d33;
+  --olive:#726c48;
+  --blue:#3c5568;
+  --line:#b3a67e;
+  --shadow:rgba(55,49,31,.14);
 
   /* fonts */
   --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
@@ -47,6 +47,25 @@
   --paper:#1a1815; --paper2:#211e19; --paperInset:#14120f; --ink:#e7dcc4; --ink2:#b7ad97;
   --stamp:#e06a4a; --ok:#8bbf5f; --olive:#9a9375; --blue:#7fa7bf; --line:#3a352c; --shadow:rgba(0,0,0,.55);
 }
+/* Classic — the old tactical terminal look */
+:root[data-paper="classic"]{
+  --paper:#0d0d0d; --paper2:#141414; --paperInset:#050505; --ink:#e0e0e0; --ink2:#9a9a9a;
+  --stamp:#ff4444; --ok:#50C878; --olive:#888888; --blue:#5fb4e6; --line:#2a2a2a; --shadow:rgba(0,0,0,.5);
+  --serif:"Share Tech Mono","Courier New",monospace;
+}
+:root[data-paper="classic"] #app{background-image:none}
+:root[data-paper="classic"] body,
+:root[data-paper="classic"] .btn,
+:root[data-paper="classic"] .file-card .fc-name{font-family:"Share Tech Mono","Courier New",monospace}
+:root[data-paper="classic"] .file-card .photo,
+:root[data-paper="classic"] .file-card .clip{display:none}
+:root[data-paper="classic"] .file-card .fc-stamp{transform:none}
+:root[data-paper="classic"] .btn,
+:root[data-paper="classic"] .file-card,
+:root[data-paper="classic"] .mod-card,
+:root[data-paper="classic"] .nav-item{box-shadow:none;border-width:1px}
+:root[data-paper="classic"] .btn.primary{color:var(--ok);background:transparent;border-color:var(--ok)}
+:root[data-paper="classic"] #btn-play-game{background:transparent;color:var(--ok);border-color:var(--ok)}
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -150,8 +169,8 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:800;letter-spacing:.005em}
 #mod-search,#mod-sort{font-family:var(--type)!important;background:rgba(255,255,255,.25)!important;
   border:1.5px solid var(--ink)!important;color:var(--ink)!important;text-transform:uppercase;font-size:.74rem}
 
-/* ---------- mod card GRID ---------- */
-#mod-list-container{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem!important}
+/* ---------- mod cards ---------- */
+#mod-list-container{display:block}
 .file-card{background:var(--paper2);border:1.5px solid var(--ink);padding:.7rem;position:relative;
   display:flex;flex-direction:column;gap:.5rem;min-height:150px;box-shadow:2px 2px 0 var(--shadow)}
 .file-card .clip{position:absolute;top:-9px;left:14px;width:15px;height:21px;border:2px solid #8a8062;
@@ -164,23 +183,32 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:800;letter-spacing:.005em}
     linear-gradient(135deg,var(--paperInset),#c8b992)}
 .file-card .photo::after{content:"NO IMAGE";position:absolute;inset:0;display:grid;place-items:center;
   font-family:var(--type);font-size:.48rem;letter-spacing:.16em;color:var(--olive);opacity:.6}
-.file-card .fc-name{font-family:var(--serif);font-weight:800;font-size:.94rem;line-height:1.05;
-  display:flex;align-items:center;gap:.4rem}
-.file-card .fc-stamp{align-self:flex-start;font-family:var(--serif);font-weight:800;font-size:.64rem;
-  letter-spacing:.06em;color:var(--ok);border:1.5px solid var(--ok);padding:.05rem .4rem;
-  transform:rotate(-4deg);cursor:pointer;user-select:none}
+.file-card .fc-name{font-family:var(--serif);font-weight:800;font-size:.98rem;line-height:1.1;
+  display:flex;align-items:center;gap:.45rem}
+.file-card .fc-stamp{align-self:flex-start;font-family:var(--serif);font-weight:800;font-size:.8rem;
+  letter-spacing:.04em;color:var(--ok);border:2px solid var(--ok);padding:.15rem .55rem;
+  transform:rotate(-3deg);cursor:pointer;user-select:none}
 .file-card.off{opacity:.75;background:var(--paperInset)}
 .file-card.off .fc-stamp{color:var(--olive);border-color:var(--olive);transform:none}
 .file-card.off .photo{filter:grayscale(1) contrast(.9)}
-.file-card .fc-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:.4rem}
-.file-card .fc-kind{font-family:var(--type);font-size:.54rem;letter-spacing:.08em;border:1px solid var(--olive);
-  color:var(--olive);padding:0 .3rem}
-.file-card .fc-act{display:flex;gap:.5rem;align-items:center}
-.file-card .fc-link{font-family:var(--type);font-size:.58rem;letter-spacing:.06em;color:var(--ink2);
-  text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:none;padding:0}
+.file-card .fc-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:.5rem;
+  border-top:1px dotted var(--line);padding-top:.5rem}
+.file-card .fc-kind{font-family:var(--type);font-size:.62rem;letter-spacing:.08em;border:1px solid var(--olive);
+  color:var(--olive);padding:.1rem .35rem}
+.file-card .fc-act{display:flex;gap:.7rem;align-items:center}
+.file-card .fc-link{font-family:var(--type);font-size:.74rem;font-weight:700;letter-spacing:.02em;color:var(--ink);
+  text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:none;padding:.15rem 0}
+.file-card .fc-link:hover{color:var(--stamp)}
 .file-card .fc-link.del{color:var(--stamp)}
-.file-card .fc-prio{font-family:var(--type);font-size:.54rem;color:var(--olive);cursor:pointer;border:1px solid var(--line);
-  padding:0 .25rem;background:none}
+.file-card .fc-prio{font-family:var(--type);font-size:.78rem;color:var(--ink2);cursor:pointer;border:1px solid var(--line);
+  padding:.05rem .35rem;background:var(--paper);line-height:1}
+.file-card .fc-prio:hover{border-color:var(--ink);color:var(--ink)}
+/* section headers for split mod groups */
+.mod-group-head{font-family:var(--type);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--olive);display:flex;align-items:center;gap:.6rem;margin:1.2rem 0 .7rem}
+.mod-group-head:first-child{margin-top:0}
+.mod-group-head::after{content:"";flex:1;height:1px;background:var(--line)}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem}
 
 /* collapsible core mods */
 .collapsible-header{font-family:var(--type);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
