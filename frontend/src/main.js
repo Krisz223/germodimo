@@ -129,8 +129,12 @@ document.querySelector('#app').innerHTML = `
         <div class="mod-card" style="margin-bottom:1.4rem;">
           <h3>Appearance</h3>
           <div style="margin-top:1rem;">
-            <div style="font-family:var(--type); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--olive); margin-bottom:.6rem;">Paper Stock</div>
+            <div style="font-family:var(--type); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--olive); margin-bottom:.6rem;">Paper Stock / Theme</div>
             <div id="theme-grid" style="display:flex; flex-wrap:wrap; gap:.6rem;"></div>
+          </div>
+          <div style="margin-top:1.4rem;">
+            <div style="font-family:var(--type); font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--olive); margin-bottom:.6rem;">Interface Layout</div>
+            <div id="structure-grid" style="display:flex; flex-wrap:wrap; gap:.6rem;"></div>
           </div>
         </div>
 
@@ -307,7 +311,7 @@ async function loadMods(){
 
 function makeCard(mod, isCore){
     const card = document.createElement('div');
-    card.className = 'file-card' + (mod.enabled ? '' : ' off');
+    card.className = 'file-card' + (mod.type === 'pak' ? ' pak' : '') + (mod.enabled ? '' : ' off');
 
     if (!isCore){
         const clip = document.createElement('span'); clip.className = 'clip'; card.appendChild(clip);
@@ -545,6 +549,14 @@ function applyPaper(key){
     localStorage.setItem('gm_paper', key);
     renderAppearance();
 }
+const STRUCTURES = { classic:'Sidebar Left', mirror:'Sidebar Right', topbar:'Top Bar' };
+function applyStructure(key){
+    if (!STRUCTURES[key]) key = 'classic';
+    if (key === 'classic') document.body.removeAttribute('data-layout');
+    else document.body.dataset.layout = key;
+    localStorage.setItem('gm_structure', key);
+    renderAppearance();
+}
 function renderAppearance(){
     const tg = document.getElementById('theme-grid'); if (!tg) return;
     const cur = localStorage.getItem('gm_paper') || 'manila';
@@ -552,8 +564,17 @@ function renderAppearance(){
     tg.innerHTML = Object.entries(PAPERS).map(([k,label]) =>
         `<button class="appearance-chip${k === cur ? ' active' : ''}" data-paper="${k}"><span class="chip-dot" style="background:${swatch[k]}"></span>${label}</button>`).join('');
     tg.querySelectorAll('[data-paper]').forEach(b => b.onclick = () => applyPaper(b.dataset.paper));
+
+    const sg = document.getElementById('structure-grid');
+    if (sg){
+        const cs = localStorage.getItem('gm_structure') || 'classic';
+        sg.innerHTML = Object.entries(STRUCTURES).map(([k,label]) =>
+            `<button class="appearance-chip${k === cs ? ' active' : ''}" data-structure="${k}">${label}</button>`).join('');
+        sg.querySelectorAll('[data-structure]').forEach(b => b.onclick = () => applyStructure(b.dataset.structure));
+    }
 }
 applyPaper(localStorage.getItem('gm_paper') || 'manila');
+applyStructure(localStorage.getItem('gm_structure') || 'classic');
 
 async function loadSettings(){
     renderAppearance();

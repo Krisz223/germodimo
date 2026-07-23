@@ -47,25 +47,65 @@
   --paper:#1a1815; --paper2:#211e19; --paperInset:#14120f; --ink:#e7dcc4; --ink2:#b7ad97;
   --stamp:#e06a4a; --ok:#8bbf5f; --olive:#9a9375; --blue:#7fa7bf; --line:#3a352c; --shadow:rgba(0,0,0,.55);
 }
-/* Classic — the old tactical terminal look */
+/* ===== Classic — the old tactical terminal look ===== */
 :root[data-paper="classic"]{
   --paper:#0d0d0d; --paper2:#141414; --paperInset:#050505; --ink:#e0e0e0; --ink2:#9a9a9a;
-  --stamp:#ff4444; --ok:#50C878; --olive:#888888; --blue:#5fb4e6; --line:#2a2a2a; --shadow:rgba(0,0,0,.5);
+  --stamp:#ff4444; --ok:#50C878; --olive:#888888; --blue:#5fb4e6; --line:#242424; --shadow:rgba(0,0,0,.5);
   --serif:"Share Tech Mono","Courier New",monospace;
+  --type:"Share Tech Mono","Courier New",monospace;
 }
-:root[data-paper="classic"] #app{background-image:none}
-:root[data-paper="classic"] body,
-:root[data-paper="classic"] .btn,
-:root[data-paper="classic"] .file-card .fc-name{font-family:"Share Tech Mono","Courier New",monospace}
+:root[data-paper="classic"] #app{background-image:
+  linear-gradient(rgba(80,200,120,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(80,200,120,.03) 1px,transparent 1px);
+  background-size:30px 30px}
+:root[data-paper="classic"] body{font-family:var(--type)}
+:root[data-paper="classic"] h1,:root[data-paper="classic"] h2,
+:root[data-paper="classic"] h3,:root[data-paper="classic"] h4{font-family:var(--type);text-transform:uppercase;font-weight:400}
+:root[data-paper="classic"] .titlebar-drag-region{background:#050505;color:var(--ok)}
+/* sidebar reads like the old nav */
+:root[data-paper="classic"] .sidebar{background:#0d0d0d;border-right:1px solid var(--line)}
+:root[data-paper="classic"] .brand-icon{background:var(--ok)}
+:root[data-paper="classic"] .brand h1{color:#fff;text-shadow:0 0 6px rgba(80,200,120,.3)}
+:root[data-paper="classic"] .nav-item{border:none;background:transparent;color:var(--olive);
+  font-size:.95rem;letter-spacing:.04em;border-left:3px solid transparent;padding:.75rem .8rem}
+:root[data-paper="classic"] .nav-item:hover{background:#141414;color:#fff}
+:root[data-paper="classic"] .nav-item.active{background:#141414;color:var(--ok);border-left:3px solid var(--ok);font-weight:400}
+:root[data-paper="classic"] .header{border-bottom:1px solid var(--line)}
+:root[data-paper="classic"] #page-title{color:#fff;letter-spacing:.02em}
+:root[data-paper="classic"] .status-badge{background:#141414;border:1px solid var(--line)}
+/* flat dark cards, no paper devices */
+:root[data-paper="classic"] .mod-card,
+:root[data-paper="classic"] .file-card{background:#141414;border:1px solid var(--line);box-shadow:none}
+:root[data-paper="classic"] .file-card.pak{background:#111820;border-color:#1d2833;background-image:none}
 :root[data-paper="classic"] .file-card .photo,
 :root[data-paper="classic"] .file-card .clip{display:none}
-:root[data-paper="classic"] .file-card .fc-stamp{transform:none}
-:root[data-paper="classic"] .btn,
-:root[data-paper="classic"] .file-card,
-:root[data-paper="classic"] .mod-card,
-:root[data-paper="classic"] .nav-item{box-shadow:none;border-width:1px}
-:root[data-paper="classic"] .btn.primary{color:var(--ok);background:transparent;border-color:var(--ok)}
-:root[data-paper="classic"] #btn-play-game{background:transparent;color:var(--ok);border-color:var(--ok)}
+:root[data-paper="classic"] .file-card .fc-name{font-family:var(--type);font-weight:400;font-size:.9rem}
+:root[data-paper="classic"] .file-card .fc-stamp{transform:none;font-family:var(--type);font-weight:400;
+  color:var(--ok);border-color:var(--ok);border-radius:0}
+:root[data-paper="classic"] .file-card.off .fc-stamp{color:var(--olive);border-color:var(--olive)}
+:root[data-paper="classic"] .file-card .fc-link{color:#cfcfcf}
+/* buttons: bordered terminal style */
+:root[data-paper="classic"] .btn{font-family:var(--type);font-weight:400;background:#1a1a1a;
+  border:1px solid var(--line);box-shadow:none;color:#e0e0e0}
+:root[data-paper="classic"] .btn:hover{background:#222;border-color:#555}
+:root[data-paper="classic"] .btn.primary,
+:root[data-paper="classic"] #btn-play-game{background:rgba(80,200,120,.1);color:var(--ok);border-color:var(--ok)}
+:root[data-paper="classic"] .btn.danger{background:rgba(255,68,68,.1);color:var(--stamp);border-color:var(--stamp)}
+:root[data-paper="classic"] .appearance-chip{border-width:1px}
+:root[data-paper="classic"] .tactical-checkbox:checked{background:var(--ok);border-color:var(--ok)}
+:root[data-paper="classic"] .tactical-checkbox:checked::after{color:#050505}
+:root[data-paper="classic"] .mod-group-head{color:var(--ok)}
+
+/* ===== Interface layout (nav position) — works on any stock ===== */
+body[data-layout="mirror"] #app{flex-direction:row-reverse}
+body[data-layout="mirror"] .sidebar{border-right:none;border-left:2px solid var(--ink)}
+body[data-layout="mirror"] .nav-item{text-align:right}
+body[data-layout="topbar"] #app{flex-direction:column}
+body[data-layout="topbar"] .sidebar{width:100%;flex-direction:row;align-items:center;padding:0 .5rem;
+  border-right:none;border-bottom:2px solid var(--ink);gap:.3rem}
+body[data-layout="topbar"] .brand{border-bottom:none;border-right:2px solid var(--ink);padding:.5rem 1rem;margin:0}
+body[data-layout="topbar"] .nav-item{border:none}
+body[data-layout="topbar"] .rail-foot{display:none}
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -188,7 +228,14 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:800;letter-spacing:.005em}
 .file-card .fc-stamp{align-self:flex-start;font-family:var(--serif);font-weight:800;font-size:.8rem;
   letter-spacing:.04em;color:var(--ok);border:2px solid var(--ok);padding:.15rem .55rem;
   transform:rotate(-3deg);cursor:pointer;user-select:none}
+/* pak cards read as a different file — cooler blue-grey stock */
+.file-card.pak{background:linear-gradient(160deg,rgba(60,85,104,.16),transparent),var(--paper2);
+  border-color:var(--blue)}
+.file-card.pak .photo{background:repeating-linear-gradient(45deg,rgba(60,85,104,.2) 0 6px,transparent 6px 12px),
+  linear-gradient(135deg,#c3c8ce,#9fadb8)}
+.file-card.pak .fc-kind{border-color:var(--blue);color:var(--blue)}
 .file-card.off{opacity:.75;background:var(--paperInset)}
+.file-card.pak.off{background:var(--paperInset)}
 .file-card.off .fc-stamp{color:var(--olive);border-color:var(--olive);transform:none}
 .file-card.off .photo{filter:grayscale(1) contrast(.9)}
 .file-card .fc-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:.5rem;

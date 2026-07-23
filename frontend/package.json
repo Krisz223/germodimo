@@ -1,6 +1,6 @@
 {
   "name": "geronimo-mod-studio",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Custom mod SDK for Geronimo",
   "private": true,
   "main": "electron-main.cjs",
