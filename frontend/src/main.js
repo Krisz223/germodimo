@@ -270,9 +270,24 @@ btnInstallUE4SS.addEventListener('click', async () => {
     if (!currentGamePath) return alert('Select the game directory first.');
     btnInstallUE4SS.textContent = 'Connecting…'; btnInstallUE4SS.disabled = true;
     const res = await window.electronAPI.installUE4SS(currentGamePath);
-    alert(res.success ? 'UE4SS installed.' : ('Install failed: ' + res.error));
-    if (res.success) checkGameStatus(currentGamePath);
-    btnInstallUE4SS.disabled = false;
+    if (!res.success) {
+        const modal=document.createElement('div');modal.className='modal-overlay';
+        modal.innerHTML=`<div class="error-modal"><div class="error-modal-head">UE4SS Installation Failed</div>
+<div class="error-modal-body">${res.error}</div>
+<div class="error-modal-foot">
+<button id="btn-close-error">Close</button>
+<button id="btn-view-log" style="margin-left:.5rem">View Log</button>
+</div></div>`;
+        document.body.appendChild(modal);
+        document.getElementById('btn-close-error').onclick=()=>modal.remove();
+        document.getElementById('btn-view-log').onclick=async()=>{
+            await window.electronAPI.openLogFile(res.logPath);
+        };
+    } else {
+        alert('UE4SS installed successfully.');
+        checkGameStatus(currentGamePath);
+    }
+    btnInstallUE4SS.textContent = 'Install UE4SS'; btnInstallUE4SS.disabled = false;
 });
 
 // ---------- Mods ----------

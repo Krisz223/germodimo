@@ -29,5 +29,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   checkForUpdate: () => ipcRenderer.invoke('update:check'),
   downloadUpdate: (info) => ipcRenderer.invoke('update:download', info),
   onUpdateAvailable: (cb) => ipcRenderer.on('update:available', (_e, info) => cb(info)),
-  onUpdateProgress: (cb) => ipcRenderer.on('update:progress', (_e, msg) => cb(msg))
+  onUpdateProgress: (cb) => ipcRenderer.on('update:progress', (_e, msg) => cb(msg)),
+
+  openLogFile: (logPath) => ipcRenderer.invoke('system:openFile', logPath)
 });

@@ -296,6 +296,20 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:800;letter-spacing:.005em}
 
 button:focus-visible,input:focus-visible,.nav-item:focus-visible{outline:2px solid var(--stamp);outline-offset:2px}
 
+/* error modal overlay */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;z-index:9999}
+.error-modal{background:var(--paper);border:2px solid var(--stamp);border-radius:4px;
+  box-shadow:0 8px 32px rgba(0,0,0,.3);max-width:500px;width:90%;overflow:hidden}
+.error-modal-head{background:var(--stamp);color:var(--paper);padding:.8rem 1rem;
+  font-family:var(--serif);font-weight:800;font-size:.95rem;letter-spacing:.02em}
+.error-modal-body{padding:1.2rem;font-family:var(--type);font-size:.8rem;color:var(--ink);
+  line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.error-modal-foot{padding:1rem;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:.6rem}
+.error-modal-foot button{font-family:var(--type);font-size:.78rem;padding:.5rem .9rem;
+  background:var(--paper2);border:1.5px solid var(--ink);color:var(--ink);cursor:pointer;transition:background .12s}
+.error-modal-foot button:hover{background:var(--ink);color:var(--paper)}
+
 @media (max-width:760px){
   #app{flex-direction:column}
   .sidebar{width:100%;flex-direction:row;flex-wrap:wrap;align-items:center;border-right:none;border-bottom:2px solid var(--ink)}

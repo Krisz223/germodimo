@@ -310,80 +310,145 @@ ipcMain.handle('mod:openFolder', async (event, folderPath) => {
     return false;
 });
 
-ipcMain.handle('mod:installUE4SS', async (event, gamePath) => {
-    const reportProgress = (msg) => event.sender.send('mod:installProgress', msg);
+ipcMain.handle('system:openFile', async (event, filePath) => {
     try {
-        // GERONIMO is UE 5.7.4 — stable v3.0.1 does not work, experimental build required.
-        // Zip layout: dwmapi.dll + ue4ss\ at root, so extracting into Win64 lands everything correctly.
+        await shell.openPath(filePath);
+        return { success: true };
+    } catch(e) {
+        return { success: false, error: e.message };
+    }
+});
+
+ipcMain.handle('mod:installUE4SS', async (event, gamePath) => {
+    const logFile = path.join(app.getPath('logs'), 'ue4ss-install.log');
+    if (!fs.existsSync(path.dirname(logFile))) fs.mkdirSync(path.dirname(logFile), { recursive: true });
+    const log = (msg) => {
+        const ts = new Date().toISOString();
+        const line = `[${ts}] ${msg}\n`;
+        fs.appendFileSync(logFile, line);
+    };
+    const reportProgress = (msg) => {
+        log(msg);
+        event.sender.send('mod:installProgress', msg);
+    };
+    try {
+        log('=== UE4SS Install Started ===');
+        log(`Game Path: ${gamePath}`);
         const ue4ssUrl = 'https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental-latest/UE4SS_v3.0.1-1012-gc838a8ac.zip';
         const tempZipPath = path.join(app.getPath('temp'), 'UE4SS_temp.zip');
         const binariesPath = path.join(gamePath, 'Geronimo', 'Binaries', 'Win64');
         const ue4ssDir = path.join(binariesPath, 'ue4ss');
 
-        // Preserve tuned settings on reinstall — the zip would overwrite UE4SS-settings.ini.
-        // (Custom UE4SS_Signatures isn't in the zip, so extraction leaves it alone.)
+        log(`Binaries Path: ${binariesPath}`);
+        if (!fs.existsSync(binariesPath)) {
+            throw new Error(`Game binaries not found at ${binariesPath}. Check GERONIMO install path.`);
+        }
+
         const settingsIni = path.join(ue4ssDir, 'UE4SS-settings.ini');
         const savedSettings = fs.existsSync(settingsIni) ? fs.readFileSync(settingsIni) : null;
+        if (savedSettings) log('Saved existing UE4SS-settings.ini');
 
         reportProgress('Fetching UE4SS (experimental) from GitHub...');
+        log(`Downloading from: ${ue4ssUrl}`);
         await downloadFile(ue4ssUrl, tempZipPath, reportProgress);
+        log(`Downloaded to: ${tempZipPath} (${fs.statSync(tempZipPath).size} bytes)`);
 
         reportProgress('Extracting ZIP archive...');
         await extract(tempZipPath, { dir: binariesPath });
+        log(`Extracted to: ${binariesPath}`);
+        log(`UE4SS dir exists: ${fs.existsSync(ue4ssDir)}`);
 
         if (savedSettings) {
             reportProgress('Restoring existing UE4SS-settings.ini...');
             fs.writeFileSync(settingsIni, savedSettings);
+            log('Restored settings.ini');
         }
 
-        // GERONIMO (UE 5.7.4) needs custom AOB signatures — the stock scan fails without them.
-        // Pull the "Far Far West" config (also UE 5.7) from UE4SS's zCustomGameConfigs:
-        // its FName_Constructor.lua + GNatives.lua make the scan succeed, and its
-        // UE4SS-settings.ini carries the 5.7 engine override + tuned hooks.
         const sigDir = path.join(ue4ssDir, 'UE4SS_Signatures');
-        const haveSigs = fs.existsSync(path.join(sigDir, 'FName_Constructor.lua'));
+        const fnameConstructor = path.join(sigDir, 'FName_Constructor.lua');
+        const gnatives = path.join(sigDir, 'GNatives.lua');
+        const haveSigs = fs.existsSync(fnameConstructor) && fs.existsSync(gnatives);
+        log(`Sig dir: ${sigDir}`);
+        log(`FName_Constructor.lua exists: ${fs.existsSync(fnameConstructor)}`);
+        log(`GNatives.lua exists: ${fs.existsSync(gnatives)}`);
+
         if (!haveSigs || !savedSettings) {
             reportProgress('Fetching UE 5.7 signatures (Far Far West config)...');
             const cfgUrl = 'https://github.com/UE4SS-RE/RE-UE4SS/releases/download/experimental-latest/zCustomGameConfigs.zip';
             const cfgZip = path.join(app.getPath('temp'), 'ue4ss_cfg.zip');
             const cfgDir = path.join(app.getPath('temp'), 'ue4ss_cfg_extract');
+            log(`Downloading signatures from: ${cfgUrl}`);
             await downloadFile(cfgUrl, cfgZip, reportProgress);
+            log(`Downloaded to: ${cfgZip} (${fs.statSync(cfgZip).size} bytes)`);
+
             if (fs.existsSync(cfgDir)) fs.rmSync(cfgDir, { recursive: true, force: true });
+            reportProgress('Extracting signatures...');
             await extract(cfgZip, { dir: cfgDir });
+            log(`Extracted configs to: ${cfgDir}`);
+
             const ffw = path.join(cfgDir, 'Far Far West');
+            log(`Far Far West path: ${ffw}, exists: ${fs.existsSync(ffw)}`);
 
             if (!haveSigs) {
                 reportProgress('Installing UE 5.7 signatures...');
                 fs.mkdirSync(sigDir, { recursive: true });
+                let sigsInstalled = 0;
                 for (const sig of ['FName_Constructor.lua', 'GNatives.lua']) {
                     const src = path.join(ffw, 'UE4SS_Signatures', sig);
-                    if (fs.existsSync(src)) fs.copyFileSync(src, path.join(sigDir, sig));
+                    const dst = path.join(sigDir, sig);
+                    if (fs.existsSync(src)) {
+                        fs.copyFileSync(src, dst);
+                        log(`Copied signature: ${sig}`);
+                        sigsInstalled++;
+                    } else {
+                        log(`WARNING: Signature not found: ${src}`);
+                    }
+                }
+                if (sigsInstalled < 2) {
+                    throw new Error(`Only ${sigsInstalled}/2 signatures installed. Check Far Far West config in zCustomGameConfigs.zip.`);
                 }
             }
-            // Only lay down the 5.7 settings on a fresh install — never clobber user tuning.
+
             if (!savedSettings) {
                 const srcIni = path.join(ffw, 'UE4SS-settings.ini');
-                if (fs.existsSync(srcIni)) fs.copyFileSync(srcIni, settingsIni);
+                if (fs.existsSync(srcIni)) {
+                    fs.copyFileSync(srcIni, settingsIni);
+                    log('Installed Far Far West UE4SS-settings.ini');
+                }
             }
+
             fs.rmSync(cfgDir, { recursive: true, force: true });
             if (fs.existsSync(cfgZip)) fs.unlinkSync(cfgZip);
+            log('Cleaned up temp config files');
         }
 
         reportProgress('Cleaning up temporary files...');
-        if (fs.existsSync(tempZipPath)) {
-            fs.unlinkSync(tempZipPath);
-        }
+        if (fs.existsSync(tempZipPath)) fs.unlinkSync(tempZipPath);
 
         reportProgress('Finalizing Mod directory structure...');
         const modsPath = getUE4SSModsPath(gamePath);
         if(!fs.existsSync(modsPath)) fs.mkdirSync(modsPath, { recursive: true });
-        if(!fs.existsSync(path.join(modsPath, 'mods.txt'))) {
-            fs.writeFileSync(path.join(modsPath, 'mods.txt'), '');
+        if(!fs.existsSync(path.join(modsPath, 'mods.txt'))) fs.writeFileSync(path.join(modsPath, 'mods.txt'), '');
+        log(`Mods directory ready: ${modsPath}`);
+
+        // Final validation
+        const finalSigs = fs.existsSync(fnameConstructor) && fs.existsSync(gnatives);
+        log(`=== VALIDATION ===`);
+        log(`FName_Constructor.lua: ${finalSigs ? 'OK' : 'MISSING'}`);
+        log(`GNatives.lua: ${fs.existsSync(gnatives) ? 'OK' : 'MISSING'}`);
+        log(`UE4SS.dll: ${fs.existsSync(path.join(ue4ssDir, 'UE4SS.dll')) ? 'OK' : 'MISSING'}`);
+
+        if (!finalSigs) {
+            throw new Error('Signature validation failed. Check log at: ' + logFile);
         }
 
-        return { success: true };
+        log('=== UE4SS Install SUCCEEDED ===');
+        return { success: true, logPath: logFile };
     } catch(e) {
-        return { success: false, error: e.message };
+        log(`ERROR: ${e.message}`);
+        log(`Stack: ${e.stack}`);
+        log('=== UE4SS Install FAILED ===');
+        return { success: false, error: e.message, logPath: logFile };
     }
 });
 
