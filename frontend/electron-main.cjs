@@ -811,8 +811,13 @@ ipcMain.handle('update:download', async (event, { assetUrl, assetName, pageUrl }
         if (!assetUrl) { if (pageUrl) shell.openExternal(pageUrl); return { ok: true, opened: 'page' }; }
         const dest = path.join(os.tmpdir(), assetName || 'GerMODimo-Setup.exe');
         await downloadFile(assetUrl, dest, (msg) => { if (mainWindow) mainWindow.webContents.send('update:progress', msg); });
-        await shell.openPath(dest);   // launch the installer; user completes it
-        return { ok: true, path: dest };
+        // The NSIS installer refuses to run while GerMODimo is open ("application is still running").
+        // Detach the installer, then quit so it can replace the files cleanly.
+        const child = require('child_process').spawn(dest, [], { detached: true, stdio: 'ignore' });
+        child.unref();
+        app.isQuitting = true;
+        setTimeout(() => app.quit(), 800);
+        return { ok: true, path: dest, quitting: true };
     } catch (e) { return { ok: false, error: e.message }; }
 });
 

@@ -121,6 +121,7 @@ document.querySelector('#app').innerHTML = `
             </label>
             <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
               <button class="btn" id="btn-check-update" style="padding:.45rem .9rem;">Check for updates</button>
+              <button class="btn" id="btn-changelog" style="padding:.45rem .9rem;">Changelog</button>
               <span id="update-status" style="font-family:var(--type); font-size:.78rem; color:var(--ink2);">Current version: <b id="cur-version">—</b></span>
             </div>
           </div>
@@ -642,8 +643,12 @@ document.getElementById('btn-check-update').addEventListener('click', async () =
     updateStatus.innerHTML = 'Checking…';
     const r = await window.electronAPI.checkForUpdate();
     if (!r.ok){ updateStatus.innerHTML = 'Check failed: ' + r.error; return; }
-    if (r.available){ updateStatus.innerHTML = `<b>Update available: v${r.latest}</b>`; showUpdate(r); }
-    else updateStatus.innerHTML = `Up to date — v${r.current}`;
+    if (r.available){ updateStatus.innerHTML = `Current version: <b>v${r.current}</b> — <span style="color:var(--stamp)">update available: v${r.latest}</span>`; showUpdate(r); }
+    else updateStatus.innerHTML = `Current version: <b>v${r.current}</b> — up to date`;
+});
+
+document.getElementById('btn-changelog').addEventListener('click', () => {
+    window.electronAPI.downloadUpdate({ pageUrl: 'https://github.com/Krisz223/germodimo/releases' });
 });
 
 window.electronAPI?.onUpdateAvailable?.(info => showUpdate(info));

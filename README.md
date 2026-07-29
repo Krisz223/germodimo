@@ -36,6 +36,14 @@ Because the installer is not code-signed, Windows SmartScreen may show a warning
 
 Mods are available separately: **[geronimo-mods](https://github.com/Krisz223/geronimo-mods)**.
 
+| Mod | What it does |
+|-----|--------------|
+| **HardcoreWeapons** | Per-class recoil overhaul — pistol, SMG, rifle, shotgun, sniper, and LMG each kick on their own profile, with a recovery multiplier and a one-handed penalty. |
+| **AudioRework** | Louder, punchier gunfire with a longer, more convincing distance tail. |
+| **ViewShake** | Speed-scaled VR view bob that eases off while scoping, plus an optional per-shot fire shake. Fully configurable. |
+| **FlashlightTweaks** | Set the weapon light's brightness and full RGB colour. |
+| **InfinitePouch** | Belt pouches refill after a short delay so mags and grenades stay in reach. Off by default. |
+
 ## Requirements
 
 - A legal copy of **Geronimo** on Steam.

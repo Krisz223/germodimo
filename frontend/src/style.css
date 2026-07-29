@@ -95,6 +95,20 @@
 :root[data-paper="classic"] .tactical-checkbox:checked{background:var(--ok);border-color:var(--ok)}
 :root[data-paper="classic"] .tactical-checkbox:checked::after{color:#050505}
 :root[data-paper="classic"] .mod-group-head{color:var(--ok)}
+/* strip the dossier ornaments so it reads as the old tactical terminal, not a paper file */
+:root[data-paper="classic"] .nav-item .n{display:none}
+:root[data-paper="classic"] .rail-foot{display:none}
+:root[data-paper="classic"] .titlebar-drag-region{font-size:0;letter-spacing:0}
+:root[data-paper="classic"] .titlebar-drag-region::before{content:"GERMODIMO";font-size:.72rem;letter-spacing:.12em}
+:root[data-paper="classic"] .brand{border-bottom:1px solid var(--line)}
+:root[data-paper="classic"] .mod-card h3,
+:root[data-paper="classic"] #page-title{font-family:var(--type);text-transform:uppercase;letter-spacing:.06em}
+:root[data-paper="classic"] .mod-card{border-left:3px solid var(--ok)}
+:root[data-paper="classic"] .file-card .ctab{background:var(--ok);color:#050505}
+:root[data-paper="classic"] .file-card.pak .ctab{background:var(--blue)}
+:root[data-paper="classic"] .status-badge{color:var(--ok)}
+:root[data-paper="classic"] #btn-play-game{border-radius:0}
+:root[data-paper="classic"] .appearance-chip.active{background:var(--ok);color:#050505;border-color:var(--ok)}
 
 /* ===== Interface layout (nav position) — works on any stock ===== */
 body[data-layout="mirror"] #app{flex-direction:row-reverse}
